@@ -165,7 +165,6 @@ public class MyParser
             }
             else
             {
-                getInput();
                 return true;
             }
         }
