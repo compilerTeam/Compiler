@@ -169,4 +169,23 @@ public class MyParser
             }
         }
     }
+    
+     private static boolean Addop()
+    {
+        if(input.equals("+"))
+        {
+            getInput();
+            return true;
+        }
+        else if(input.equals("-"))
+        {
+            getInput();
+            return true;
+        }
+        else
+        {
+            System.out.print("not true operation!");
+            return false;
+        }
+    }
 }
