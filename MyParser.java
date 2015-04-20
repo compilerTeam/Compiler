@@ -188,4 +188,82 @@ public class MyParser
             return false;
         }
     }
-}
+    
+    //&&sarah-added
+    public static boolean Mulop()
+    {
+       if(input.equals("*")||input.equals("&")||input.equals("%"))
+           return true;
+        return false;
+    }
+
+    public static boolean Relop()
+    {
+        if(input.equals(" =")||input.equals(" ==")||input.equals("!=")||input.equals("<")||input.equals("<=")||input.equals(">")||input.equals(">="))
+            return true;
+        return false;
+    }
+
+    public static boolean CondTerm(){
+        //must be done later
+        return true;
+    }
+
+
+    //&&end sarah-added
+    
+   //&&sarah-added
+    private static boolean ConstDecl(){
+        if(input.equals("final")){
+            getInput();
+            if(Type()){
+               getInput();
+                if(input.equals("identifier")){
+                    getInput();
+                    if(input.equals(" =")){
+                        getInput();
+                        if(input.equals("number")||input.equals("Terminal")){
+                            return true;
+                        }
+                        System.out.println("initialize via char or integer. error on line"+token.getLine()+"and col"+token.getCol());
+                        return false;
+                    }
+                    System.out.println("initialize needs'=' symbol. error on line"+token.getLine()+"and col"+token.getCol());
+                    return false;
+                }
+                System.out.println("enter identifier after type. error on line"+token.getLine()+"and col"+token.getCol());
+                return false;
+            }
+            System.out.println("enter type at first. error on line"+token.getLine()+"and col"+token.getCol());
+            return false;
+        }
+        System.out.println("declare final const. error on line"+token.getLine()+"and col"+token.getCol());
+        return false;
+    }
+
+
+    private static boolean Block() {  //dunno if its right or anything...:|
+        if(input.equals("{")){
+            int countOpenBlock=0;
+            while(input.equals("{")){
+                getInput();
+                countOpenBlock++;
+            }
+            if(Statement()){
+                if(input.equals("}")){
+                    while(input.equals("}")){
+                        getInput();
+                        countOpenBlock--;
+                    }
+                }
+            }
+            if(countOpenBlock==0)
+                return true;
+            return false;
+        }
+        return false;  //To change body of created methods use File | Settings | File Templates.
+    }
+    //&&end sarah-added
+    
+    
+}//end class
