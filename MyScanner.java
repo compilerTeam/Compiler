@@ -51,6 +51,7 @@ public class MyScanner
         if(stringIndexCounter >= (inputString.length()))
         {
             rToken . setString("eof");
+            return rToken;
         }
         ///////////////////////////////////////////////////////////////
 
