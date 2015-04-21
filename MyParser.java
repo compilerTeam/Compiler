@@ -329,6 +329,7 @@ public class MyParser
                 {
                     if(input.equals(")"))
                     {
+                        getInput();
                         return true;
                     }
                     else
@@ -367,10 +368,9 @@ public class MyParser
                             }
                         }
                     }
-
                     else
                     {
-                        System.out.print("warnning:no ACtPART");
+                        System.out.println("warnning:() with no ActPART");
                         if(input.equals(")"))
                         {
                             getInput();
@@ -383,13 +383,20 @@ public class MyParser
                         }
                     }
                 }
+                else
+                {
+                    System.out.println("warnning: no (), no ActPART");
+                    rreturn ture;
+                }
             }
             else
             {
-                return true;
+                /////////////////what to DO?inja age designator qalat bashe!tokenemun az dast mire!
+                System.out.println("wrong designator!");
+                return false;
             }
         }
-        System.out.println("not True Factor!!!!!!!");
+        System.out.println("ehat R U doing in factor?!");
         return false;
     }
     //end !;p
