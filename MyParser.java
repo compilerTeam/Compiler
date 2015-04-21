@@ -264,6 +264,134 @@ public class MyParser
         return false;  //To change body of created methods use File | Settings | File Templates.
     }
     //&&end sarah-added
-    
+    //pegah added ;p 1 ordibehesht!11:30
+    private static boolean Factor()
+    {
+        if(input.equals("number"))
+        {
+            getInput();
+            return true;
+        }
+        else if(input.equals("charConst"))
+        {
+            getInput();
+            return true;
+        }
+        else if(input.equals("new"))
+        {
+            getInput();
+            if(input.equals("identifier"))
+            {
+                getInput();
+                if(input.equals("["))
+                {
+                    getInput();
+                    if(input.equals("-") || input.equals("number") ||input.equals("new") || input.equals("("))
+                    {
+                        if(Expression())
+                        {
+                           if(input.equals("]"))
+                           {
+                                getInput();
+                                return true;
+                           }
+                           else
+                            {
+                                System.out.println("] baste nazashtin!,in FActor");
+                                return false;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        System.out.print("missing expression!");
+                        return false;
+                    }
+
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                System.out.println("wrong in Factor missing id!!");
+                return false;
+            }
+        }
+        else if(input.equals("("))
+        {
+            getInput();
+            if(input.equals("-") || input.equals("number") ||input.equals("new") || input.equals("("))
+            {
+                if(Expression())
+                {
+                    if(input.equals(")"))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        System.out.print("missing )!in Factor/(");
+                        return false;
+                    }
+                }
+            }
+                else
+                {
+                    System.out.println("missing expression!!!in factor(");
+                    return false;
+                }
+        }
+        else if(input.equals("identifier"))
+        {
+            if(Designator())
+            {
+                if(input.equals("("))
+                {
+                    getInput();
+                    if(input.equals("-") || input.equals("number") ||input.equals("new") || input.equals("("))
+                    {
+                        if(ActParts())
+                        {
+                            if(input.equals(")"))
+                            {
+                                getInput();
+                                return true;
+                            }
+                            else
+                            {
+                                System.out.println(") baste nazashtin!,in FActor,Design");
+                                return false;
+                            }
+                        }
+                    }
+
+                    else
+                    {
+                        System.out.print("warnning:no ACtPART");
+                        if(input.equals(")"))
+                        {
+                            getInput();
+                            return true;
+                        }
+                        else
+                        {
+                            System.out.println(") baste nazashtin!,in FActor,Design");
+                            return false;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                return true;
+            }
+        }
+        System.out.println("not True Factor!!!!!!!");
+        return false;
+    }
+    //end !;p
     
 }//end class
