@@ -386,7 +386,7 @@ public class MyParser
                 else
                 {
                     System.out.println("warnning: no (), no ActPART");
-                    rreturn ture;
+                    return true;
                 }
             }
             else
