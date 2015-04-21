@@ -286,16 +286,16 @@ public class MyParser
                 if(input.equals("["))
                 {
                     getInput();
-                    if(input.equals("-") || input.equals("number") ||input.equals("new") || input.equals("("))
+                    if(input.equals("identifier") || input.equals("-") || input.equals("number") ||input.equals("new") || input.equals("("))
                     {
                         if(Expression())
                         {
-                           if(input.equals("]"))
-                           {
+                            if(input.equals("]"))
+                            {
                                 getInput();
                                 return true;
-                           }
-                           else
+                            }
+                            else
                             {
                                 System.out.println("] baste nazashtin!,in FActor");
                                 return false;
@@ -323,7 +323,7 @@ public class MyParser
         else if(input.equals("("))
         {
             getInput();
-            if(input.equals("-") || input.equals("number") ||input.equals("new") || input.equals("("))
+            if(input.equals("identifier") ||  input.equals("-") || input.equals("number") ||input.equals("new") || input.equals("("))
             {
                 if(Expression())
                 {
@@ -339,11 +339,11 @@ public class MyParser
                     }
                 }
             }
-                else
-                {
-                    System.out.println("missing expression!!!in factor(");
-                    return false;
-                }
+            else
+            {
+                System.out.println("missing expression!!!in factor(");
+                return false;
+            }
         }
         else if(input.equals("identifier"))
         {
@@ -396,7 +396,7 @@ public class MyParser
                 return false;
             }
         }
-        System.out.println("ehat R U doing in factor?!");
+        System.out.println("what R U doing in factor?!");
         return false;
     }
     //end !;p
