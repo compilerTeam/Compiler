@@ -441,6 +441,7 @@ public class MyParser
                                 return false;
                             }
                         }
+                        return false;
                     }
                     else
                     {
@@ -498,6 +499,7 @@ public class MyParser
                                 return false;
                             }
                         }
+                        return false;
                     }
                     else
                     {
