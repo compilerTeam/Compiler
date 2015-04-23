@@ -520,6 +520,52 @@ public class MyParser
             }
         }
     }
-    //end sevom!
+        private static boolean CondFact()
+    {
+        if(input.equals("-") ||input.equals("identifier")||input.equals("charConst") 
+                || input.equals("number") ||input.equals("new") || input.equals("("))//first(exp)
+        {
+            if(Expression())
+            {
+                if(Relop())
+                {
+                    if(input.equals("-") ||input.equals("identifier")||input.equals("charConst")
+                            || input.equals("number") ||input.equals("new") || input.equals("("))//first(exp)
+                    {
+                        if(Expression())
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            System.out.println("wrong 2'nd exp in condition!");
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        System.out.println("missing 2'nd conditional exp!");
+                        return false;
+                    }
+                }
+                else
+                {
+                    System.out.println("missing/wrong Relop!");
+                    return false;
+                }
+            }
+            else
+            {
+                System.out.println("wrong 1'st exp in condition!");
+                return false;
+            }
+        }
+        else
+        {
+            System.out.println("missing conditional expression!");
+            return false;
+        }
+    }
+    //end sevom ordibehesht!!
     
 }//end class
