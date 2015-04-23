@@ -400,5 +400,124 @@ public class MyParser
         return false;
     }
     //end !;p
+    //3vom ordibehesht!
+        private static boolean Expression()
+    {
+        if(input.equals("-"))
+        {
+            getInput();
+            if(input.equals("identifier")||input.equals("charConst") || input.equals("number") ||input.equals("new") || input.equals("("))
+            {
+                if(Term())
+                {
+                    getInput();
+                    if(input.equals("+") || input.equals("-")) //AddOp!
+                    {
+                        while(Addop())
+                        {
+                            if(input.equals("identifier")||input.equals("charConst") || input.equals("number") ||input.equals("new") || input.equals("("))
+                            {
+                                if(Term())
+                                {
+                                    if(input.equals("+") || input.equals("-"))
+                                    {
+                                        continue;
+                                    }
+                                    else if(input.equals(";") || input.equals(",") || input.equals("==") ||
+                                            input.equals("!=")||input.equals("<")||input.equals("<=")||input.equals(">")||input.equals(">="))//follow(Expression)
+                                    {
+                                        return true;
+                                    }
+                                    else
+                                    {
+                                        System.out.println("wrong exp");
+                                        return false;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                System.out.println("missing term!");
+                                return false;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        System.out.println("wrong exp");
+                        return false;
+                    }
+                }
+                else
+                {
+                    System.out.println("wrong Term in expression!");
+                    return false;
+                }
+            }
+            else
+            {
+                System.out.println("no term in expression");
+                return false;
+            }
+        }
+        else
+        {
+            getInput();
+            if(input.equals("identifier")||input.equals("charConst") || input.equals("number") ||input.equals("new") || input.equals("("))
+            {
+                if(Term())
+                {
+                    getInput();
+                    if(input.equals("+") || input.equals("-")) //AddOp!
+                    {
+                        while(Addop())
+                        {
+                            if(input.equals("identifier")||input.equals("charConst") || input.equals("number") ||input.equals("new") || input.equals("("))
+                            {
+                               if(Term())
+                               {
+                                   if(input.equals("+") || input.equals("-"))
+                                   {
+                                       continue;
+                                   }
+                                   else if(input.equals(";") || input.equals(",") || input.equals("==") ||
+                                        input.equals("!=")||input.equals("<")||input.equals("<=")||input.equals(">")||input.equals(">="))//follow(Expression)
+                                   {
+                                       return true;
+                                   }
+                                   else
+                                   {
+                                       System.out.println("wrong exp");
+                                       return false;
+                                   }
+                               }
+                            }
+                            else
+                            {
+                                System.out.println("missing term!");
+                                return false;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        System.out.println("wrong exp");
+                        return false;
+                    }
+                }
+                else
+                {
+                    System.out.println("wrong Term in expression!");
+                    return false;
+                }
+            }
+            else
+            {
+                System.out.println("no term in expression");
+                return false;
+            }
+        }
+    }
+    //end sevom!
     
 }//end class
