@@ -193,21 +193,40 @@ public class MyParser
     //&&sarah-added
     public static boolean Mulop()
     {
-       if(input.equals("*")||input.equals("&")||input.equals("%"))
+       if(input.equals("*")||input.equals("&")||input.equals("%")){
+           getInput();
            return true;
+       }
+       System.out.print("not true operator");
         return false;
     }
 
     public static boolean Relop()
     {
-        if(input.equals(" =")||input.equals(" ==")||input.equals("!=")||input.equals("<")||input.equals("<=")||input.equals(">")||input.equals(">="))
-            return true;
+        if(input.equals(" =")||input.equals(" ==")||input.equals("!=")||input.equals("<")||input.equals("<=")||input.equals(">")||input.equals(">=")){
+            getInput();
+            return true;}
+        System.out.print("not true operator");    
         return false;
     }
 
     public static boolean CondTerm(){
-        //must be done later
-        return true;
+        if(CondFact()){
+            getInput();
+            while(input.equals("&&")) {
+                getInput();
+                if(CondFact())
+                    getInput();
+                else{
+                    System.out.println("some fact is missing in condition line"+token.getLine()+"and col"+token.getCol());
+                    return false;
+                }
+            }
+            return true;
+        }
+        System.out.println("there must be a condition fact here in line"+token.getLine()+"and col"+token.getCol());
+        return false;
+        
     }
 
 
