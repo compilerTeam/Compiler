@@ -53,10 +53,11 @@ public class MyParser
         System.out.println("error!on program!");
         return false;
     }
-    public static void Mulop()
-    {
-
-    }
+    //sarah speaks B-) : this method is extra, so commented it!
+    //public static void Mulop()
+    //{
+//
+    //}
 
 
     ///////////////////nonterminal's functions   /// input = akharin tokene khande nashode!
@@ -1100,5 +1101,153 @@ public class MyParser
         }
     }
     //end sevom ordibehesht!!
+    
+     //$$sarah
+
+    private static boolean ClassDecl(){
+          if(input.equals("identifier")){
+              getInput();
+              if(input.equals("{")){
+                  while(VarDecl()){
+
+                  }
+                  if(input.equals("}"))
+                      return true;
+                  else{
+                      System.out.println("not matching {} in line"+token.getLine()+"an col"+token.getCol());
+                      return false;
+                  }
+              }
+              else{
+                  System.out.println("lost { in line"+token.getLine()+"an col"+token.getCol());
+                  return false;
+              }
+          }
+        else{
+              System.out.println("enter identifier in line" + token.getLine() + " and col" + token.getCol());
+              return false;
+          }
+    }
+    private static boolean ArgsForm(){
+        boolean result;
+        if(Type()){
+            if(input.equals("identifier")){
+                result=true;
+                getInput();
+                if(input.equals(",")){
+                    getInput();
+                    while(Type()){
+                        if(input.equals("identifier")) {
+                            getInput();
+                        }
+                        else{
+                            result=false;
+                            System.out.println("missing identifier in line"+token.getLine()+"and col"+token.getCol());
+                            break;
+                        }
+                    }
+                    return result;
+                }
+                return result;
+
+            }
+            else{
+                System.out.println("missing identifier in line"+token.getLine()+"and col"+token.getCol());
+                return false;
+            }
+        }
+        else{
+            System.out.println("missing type on identifier in line"+token.getLine()+"and col"+token.getCol());
+            return false;
+        }
+    }
+
+    private static boolean ActParse(){
+         boolean result;
+        if(Expression()){
+            result=true;
+            if(input.equals(",")) {
+                while(input.equals(",")){
+                    if(Expression()){
+                        continue;
+                    }
+                    else{
+                        result=false;
+                        System.out.println("expression expected in line"+token.getLine()+ "and col"+token.getCol());
+                        break;
+                    }
+                }
+                return result;
+            }
+            else{
+                return result;
+            }
+        }
+        else{
+            result=false;
+        }
+
+        return result;
+    }
+
+    private static boolean Term(){
+          boolean result=false;
+          if(Factor()){
+              result=true;
+              getInput();
+              if(input.equals("/")||input.equals("%")||input.equals("*")){
+                  if(Mulop()){
+                      while(Mulop()){
+                          if(Factor()){
+                              continue;
+                          }
+                          else{
+                              //error occures:|
+                          }
+                      }
+                  }
+                  else{
+                      //error occures:|
+                  }
+              }
+              else{
+                  //do nothing. no loop occures here.
+              }
+          }
+        else{
+              result=false;
+          }
+        getInput();
+        return result;
+    }
+
+    private static boolean Designator(){
+        if(input.equals("identifier")){
+           boolean result=true;
+            getInput();
+            while(input.equals(".")||Expression()){
+                if(input.equals(".")){
+                    getInput();
+                    if(input.equals("identifier")){
+                        continue;
+                    }
+                    else{
+                        System.out.println("missing identifier in line"+token.getLine()+"and col"+token.getCol());
+                        result=false;
+                        break;
+                    }
+                }
+                else{//expression is true!
+                    continue;
+                }
+            }
+            getInput();
+            return result;
+        }
+        return false;
+    }
+
+    //$$end sarah
+
     
 }//end class
