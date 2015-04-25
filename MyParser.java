@@ -22,7 +22,7 @@ public class MyParser
     }
     public static void error()
     {
-
+      //
     }
     public static boolean program()
     {
@@ -42,12 +42,12 @@ public class MyParser
             if(input.equals("calss"))
             {
                 getInput();
-                return ClassDecl;
+                return ClassDecl();
             }
             if(input.equals("function"))
             {
                 getInput();
-                return FunctuionDecl;
+                return MethodDecl();
             }
         }
         System.out.println("error!on program!");
@@ -73,26 +73,26 @@ public class MyParser
         {
             if(input.equals("identifier"))
             {
-               getInput();
-               while((!input.equals(";")))
-               {
-                  if(input .equals(","))
-                  {
-                     getInput();
-                     if(input.equals("identifier"))
-                     {
+                getInput();
+                while((!input.equals(";")))
+                {
+                    if(input .equals(","))
+                    {
                         getInput();
-                     }
-                     else
-                     {
-                        return false;   //id ,,
-                     }
-                  }
-                  else
-                  return false;  //id!
-               }
-               getInput();
-               return true;
+                        if(input.equals("identifier"))
+                        {
+                            getInput();
+                        }
+                        else
+                        {
+                            return false;   //id ,,
+                        }
+                    }
+                    else
+                        return false;  //id!
+                }
+                getInput();
+                return true;
             }
         }
         return false;
@@ -169,9 +169,10 @@ public class MyParser
                 return true;
             }
         }
+        return false;
     }
-    
-     private static boolean Addop()
+
+    private static boolean Addop()
     {
         if(input.equals("+"))
         {
@@ -189,15 +190,15 @@ public class MyParser
             return false;
         }
     }
-    
+
     //&&sarah-added
     public static boolean Mulop()
     {
-       if(input.equals("*")||input.equals("&")||input.equals("%")){
-           getInput();
-           return true;
-       }
-       System.out.print("not true operator");
+        if(input.equals("*")||input.equals("&")||input.equals("%")){
+            getInput();
+            return true;
+        }
+        System.out.print("not true operator");
         return false;
     }//checked
 
@@ -206,7 +207,7 @@ public class MyParser
         if(input.equals(" =")||input.equals(" ==")||input.equals("!=")||input.equals("<")||input.equals("<=")||input.equals(">")||input.equals(">=")){
             getInput();
             return true;}
-        System.out.print("not true operator");    
+        System.out.print("not true operator");
         return false;
     }
 
@@ -226,18 +227,18 @@ public class MyParser
         }
         System.out.println("there must be a condition fact here in line"+token.getLine()+"and col"+token.getCol());
         return false;
-        
+
     }
 
 
     //&&end sarah-added
-    
-   //&&sarah-added
+
+    //&&sarah-added
     private static boolean ConstDecl(){//checked
         if(input.equals("final")){
             getInput();
             if(Type()){
-               getInput();
+                getInput();
                 if(input.equals("identifier")){
                     getInput();
                     if(input.equals(" =")){
@@ -264,7 +265,7 @@ public class MyParser
 
 
     private static boolean Block() {  //dunno if its right or anything...:|
-    //checked
+        //checked
         if(input.equals("{")){
             int countOpenBlock=0;
             while(input.equals("{")){
@@ -379,7 +380,7 @@ public class MyParser
                     getInput();
                     if(input.equals("-") || input.equals("number") ||input.equals("new") || input.equals("("))
                     {
-                        if(ActParts())
+                        if(ActPars())
                         {
                             if(input.equals(")"))
                             {
@@ -500,23 +501,23 @@ public class MyParser
                         {
                             if(input.equals("identifier")||input.equals("charConst") || input.equals("number") ||input.equals("new") || input.equals("("))
                             {
-                               if(Term())
-                               {
-                                   if(input.equals("+") || input.equals("-"))
-                                   {
-                                       continue;
-                                   }
-                                   else if(input.equals(";") || input.equals(",") || input.equals("==") ||
-                                        input.equals("!=")||input.equals("<")||input.equals("<=")||input.equals(">")||input.equals(">="))//follow(Expression)
-                                   {
-                                       return true;
-                                   }
-                                   else
-                                   {
-                                       System.out.println("wrong exp");
-                                       return false;
-                                   }
-                               }
+                                if(Term())
+                                {
+                                    if(input.equals("+") || input.equals("-"))
+                                    {
+                                        continue;
+                                    }
+                                    else if(input.equals(";") || input.equals(",") || input.equals("==") ||
+                                            input.equals("!=")||input.equals("<")||input.equals("<=")||input.equals(">")||input.equals(">="))//follow(Expression)
+                                    {
+                                        return true;
+                                    }
+                                    else
+                                    {
+                                        System.out.println("wrong exp");
+                                        return false;
+                                    }
+                                }
                             }
                             else
                             {
@@ -545,7 +546,7 @@ public class MyParser
             }
         }
     }
-     private static boolean CondFact()
+    private static boolean CondFact()
     {
         if(input.equals("-") ||input.equals("identifier")||input.equals("charConst")
                 || input.equals("number") ||input.equals("new") || input.equals("("))//first(exp)
@@ -702,7 +703,7 @@ public class MyParser
                 {
                     getInput();
                     if(input.equals("-") ||input.equals("identifier")||input.equals("charConst")
-                            || input.equals("number") ||input.equals("new") || input.equals("("))//first(actParts)
+                            || input.equals("number") ||input.equals("new") || input.equals("("))//first(ActPars)
                     {
                         if(Expression())
                         {
@@ -809,30 +810,30 @@ public class MyParser
                                     || input.equals(";") ||input.equals("print") || input.equals("read")
                                     || input.equals("{") || input.equals("if") || input.equals("identifier"))//first(statement)
                             {
-                               if(Statement())
-                               {
-                                   if(input.equals("else"))
-                                   {
-                                       if(input.equals("while") ||input.equals("break")||input.equals("return")
-                                               || input.equals(";") ||input.equals("print") || input.equals("read")
-                                               || input.equals("{") || input.equals("if") || input.equals("identifier"))//first(statement)
-                                       {
-                                           if(Statement())
-                                           {
-                                               return true;
-                                           }
-                                       }
-                                       else
-                                       {
-                                           System.out.println("missing statement on else if!");
-                                           return false;
-                                       }
-                                   }
-                                   else
-                                   {   //check follow?!
-                                       return true;
-                                   }
-                               }
+                                if(Statement())
+                                {
+                                    if(input.equals("else"))
+                                    {
+                                        if(input.equals("while") ||input.equals("break")||input.equals("return")
+                                                || input.equals(";") ||input.equals("print") || input.equals("read")
+                                                || input.equals("{") || input.equals("if") || input.equals("identifier"))//first(statement)
+                                        {
+                                            if(Statement())
+                                            {
+                                                return true;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            System.out.println("missing statement on else if!");
+                                            return false;
+                                        }
+                                    }
+                                    else
+                                    {   //check follow?!
+                                        return true;
+                                    }
+                                }
                             }
                             else
                             {
@@ -1123,37 +1124,38 @@ public class MyParser
             System.out.println("wrong statement sig!");
             return false;
         }
+        return false;
     }
     //end sevom ordibehesht!!
-    
-     //$$sarah
+
+    //$$sarah
 
     private static boolean ClassDecl(){//checked
-          if(input.equals("identifier")){
-              getInput();
-              if(input.equals("{")){
-                  getInput();
-                  while(VarDecl()){
+        if(input.equals("identifier")){
+            getInput();
+            if(input.equals("{")){
+                getInput();
+                while(VarDecl()){
 
-                  }
-                  if(input.equals("}")){
-                      getInput();
-                      return true;
-                  }
-                  else{
-                      System.out.println("not matching {} in line"+token.getLine()+"an col"+token.getCol());
-                      return false;
-                  }
-              }
-              else{
-                  System.out.println("lost { in line"+token.getLine()+"an col"+token.getCol());
-                  return false;
-              }
-          }
+                }
+                if(input.equals("}")){
+                    getInput();
+                    return true;
+                }
+                else{
+                    System.out.println("not matching {} in line"+token.getLine()+"an col"+token.getCol());
+                    return false;
+                }
+            }
+            else{
+                System.out.println("lost { in line"+token.getLine()+"an col"+token.getCol());
+                return false;
+            }
+        }
         else{
-              System.out.println("enter identifier in line" + token.getLine() + " and col" + token.getCol());
-              return false;
-          }
+            System.out.println("enter identifier in line" + token.getLine() + " and col" + token.getCol());
+            return false;
+        }
     }
     private static boolean ArgsForm(){//checked
         boolean result=false;
@@ -1191,8 +1193,8 @@ public class MyParser
         }
     }
 
-    private static boolean ActParse(){//checked
-         boolean result=false;
+    private static boolean ActPars(){//checked
+        boolean result=false;
         if(Expression()){
             result=true;
             if(input.equals(",")) {
@@ -1222,44 +1224,44 @@ public class MyParser
     }
 
     private static boolean Term(){//problem
-          boolean result=false;
-          if(Factor()){
-              result=true;
-              getInput();
-              if(input.equals("/")||input.equals("%")||input.equals("*")){
-                  result=false;
-                  //if(Mulop()){
-                      while(Mulop()){
-                          if(Factor()){
-                              result=true;
-                              continue;
-                          }
-                          else{
-                              result=false;
-                              System.out.println("Factor expected here");
-                              //error occures:|
-                          }
-                      }
-                  //}
-                  //else{
-                      //error occures:|
-                  //}
-              }
-              else{
-                  //do nothing. no loop occures here.
-              }
-          }
+        boolean result=false;
+        if(Factor()){
+            result=true;
+            getInput();
+            if(input.equals("/")||input.equals("%")||input.equals("*")){
+                result=false;
+                //if(Mulop()){
+                while(Mulop()){
+                    if(Factor()){
+                        result=true;
+                        continue;
+                    }
+                    else{
+                        result=false;
+                        System.out.println("Factor expected here");
+                        //error occures:|
+                    }
+                }
+                //}
+                //else{
+                //error occures:|
+                //}
+            }
+            else{
+                //do nothing. no loop occures here.
+            }
+        }
         else{
-              result=false;
-              System.out.println("Factor expected here");
-          }
-        
+            result=false;
+            System.out.println("Factor expected here");
+        }
+
         return result;
     }
 
     private static boolean Designator(){//checked
         if(input.equals("identifier")){
-           boolean result=true;
+            boolean result=true;
             getInput();
             while(input.equals(".")||Expression()){
                 if(input.equals(".")){
@@ -1277,7 +1279,7 @@ public class MyParser
                     continue;
                 }
             }
-            
+
             return result;
         }
         return false;
@@ -1285,5 +1287,5 @@ public class MyParser
 
     //$$end sarah
 
-    
+
 }//end class
