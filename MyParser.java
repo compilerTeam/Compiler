@@ -199,10 +199,10 @@ public class MyParser
        }
        System.out.print("not true operator");
         return false;
-    }
+    }//checked
 
     public static boolean Relop()
-    {
+    {//checked
         if(input.equals(" =")||input.equals(" ==")||input.equals("!=")||input.equals("<")||input.equals("<=")||input.equals(">")||input.equals(">=")){
             getInput();
             return true;}
@@ -210,7 +210,7 @@ public class MyParser
         return false;
     }
 
-    public static boolean CondTerm(){
+    public static boolean CondTerm(){//checked
         if(CondFact()){
             getInput();
             while(input.equals("&&")) {
@@ -233,7 +233,7 @@ public class MyParser
     //&&end sarah-added
     
    //&&sarah-added
-    private static boolean ConstDecl(){
+    private static boolean ConstDecl(){//checked
         if(input.equals("final")){
             getInput();
             if(Type()){
@@ -243,6 +243,7 @@ public class MyParser
                     if(input.equals(" =")){
                         getInput();
                         if(input.equals("number")||input.equals("Terminal")){
+                            getInput();
                             return true;
                         }
                         System.out.println("initialize via char or integer. error on line"+token.getLine()+"and col"+token.getCol());
@@ -263,6 +264,7 @@ public class MyParser
 
 
     private static boolean Block() {  //dunno if its right or anything...:|
+    //checked
         if(input.equals("{")){
             int countOpenBlock=0;
             while(input.equals("{")){
@@ -277,8 +279,11 @@ public class MyParser
                     }
                 }
             }
-            if(countOpenBlock==0)
+            if(countOpenBlock==0){
+                getInput();
                 return true;
+            }
+            System.out.println("some } is missing in line"+token.getLine()+"and col"+token.getCol());
             return false;
         }
         return false;  //To change body of created methods use File | Settings | File Templates.
@@ -1123,15 +1128,18 @@ public class MyParser
     
      //$$sarah
 
-    private static boolean ClassDecl(){
+    private static boolean ClassDecl(){//checked
           if(input.equals("identifier")){
               getInput();
               if(input.equals("{")){
+                  getInput();
                   while(VarDecl()){
 
                   }
-                  if(input.equals("}"))
+                  if(input.equals("}")){
+                      getInput();
                       return true;
+                  }
                   else{
                       System.out.println("not matching {} in line"+token.getLine()+"an col"+token.getCol());
                       return false;
@@ -1147,16 +1155,18 @@ public class MyParser
               return false;
           }
     }
-    private static boolean ArgsForm(){
-        boolean result;
+    private static boolean ArgsForm(){//checked
+        boolean result=false;
         if(Type()){
             if(input.equals("identifier")){
                 result=true;
                 getInput();
                 if(input.equals(",")){
+                    result=false;
                     getInput();
                     while(Type()){
                         if(input.equals("identifier")) {
+                            result=true;
                             getInput();
                         }
                         else{
@@ -1181,14 +1191,16 @@ public class MyParser
         }
     }
 
-    private static boolean ActParse(){
-         boolean result;
+    private static boolean ActParse(){//checked
+         boolean result=false;
         if(Expression()){
             result=true;
             if(input.equals(",")) {
+                result=false;
                 while(input.equals(",")){
+                    getInput();
                     if(Expression()){
-                        continue;
+                        result=true;
                     }
                     else{
                         result=false;
@@ -1203,31 +1215,35 @@ public class MyParser
             }
         }
         else{
+            System.out.println("expression expected in line"+token.getLine()+ "and col"+token.getCol());
             result=false;
         }
-
         return result;
     }
 
-    private static boolean Term(){
+    private static boolean Term(){//problem
           boolean result=false;
           if(Factor()){
               result=true;
               getInput();
               if(input.equals("/")||input.equals("%")||input.equals("*")){
-                  if(Mulop()){
+                  result=false;
+                  //if(Mulop()){
                       while(Mulop()){
                           if(Factor()){
+                              result=true;
                               continue;
                           }
                           else{
+                              result=false;
+                              System.out.println("Factor expected here");
                               //error occures:|
                           }
                       }
-                  }
-                  else{
+                  //}
+                  //else{
                       //error occures:|
-                  }
+                  //}
               }
               else{
                   //do nothing. no loop occures here.
@@ -1235,12 +1251,13 @@ public class MyParser
           }
         else{
               result=false;
+              System.out.println("Factor expected here");
           }
-        getInput();
+        
         return result;
     }
 
-    private static boolean Designator(){
+    private static boolean Designator(){//checked
         if(input.equals("identifier")){
            boolean result=true;
             getInput();
@@ -1260,7 +1277,7 @@ public class MyParser
                     continue;
                 }
             }
-            getInput();
+            
             return result;
         }
         return false;
