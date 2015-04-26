@@ -156,9 +156,9 @@ public class MyScanner
                 ch =glanceInput();
                 if(ch=='/')
                 {
-                    rToken.setString("//");
-                    rToken.setLine(stringLineCounter);
-                    rToken.setCol(stringColCounter);
+//                    rToken.setString("//");
+//                    rToken.setLine(stringLineCounter);
+//                    rToken.setCol(stringColCounter);
 
                     while(ch!=10 && ch!=13 && stringIndexCounter!=inputString.length())
                         ch=getInput();
@@ -390,6 +390,7 @@ public class MyScanner
 //                    }
 //                    return null;
             case '\'':        //this is ' !
+
                 ch=glanceInput();
                 String charConst = "'";
                 if((ch>='A' && ch<='Z') || (ch>='a' && ch<='z') || (ch>='0'&& ch<='9'))
@@ -404,9 +405,11 @@ public class MyScanner
                         getInput();
                         //read next character
                         ch = glanceInput();
+
                     }
                     if(ch == '\'')
                     {
+                        ch=getInput();
                         rToken.setLine(stringLineCounter);
                         rToken.setCol(stringColCounter);
                         rToken.setType(2);
