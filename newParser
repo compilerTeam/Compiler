@@ -230,7 +230,7 @@ public class MyParser
     }
     private static boolean ConstDecl()
     {//checked
-        System.out.println(input);
+        
         if(input.equals("final")){
             getInput();
 
