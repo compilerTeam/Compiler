@@ -1,14 +1,5 @@
 package com.company;
-
 import java.io.*;
-
-/**
- * Created with IntelliJ IDEA.
- * User: dell
- * Date: 3/8/15
- * Time: 4:35 PM
- * To change this template use File | Settings | File Templates.
- */
 public class MyScanner
 {
     private static String inputString = new String();
@@ -30,7 +21,8 @@ public class MyScanner
                 inputString += c;
             }
             fileInput.close();
-
+            char character = 3;
+            inputString +=character ;
         }
         catch (Exception e)
         {
@@ -48,7 +40,7 @@ public class MyScanner
         char constChar;
         //start
         ////////////////////////////////////////////////////////////new
-        if(stringIndexCounter == (inputString.length()))
+        if((stringIndexCounter >= (inputString.length())))
         {
             rToken.setString("eof");
             return rToken;
@@ -184,19 +176,19 @@ public class MyScanner
                 }
                 break;
             case '+':
-
+                ch=glanceInput();
                 if(ch=='+')
                 {
                     ch=getInput();
-                    rToken.setString(" ++");
+                    rToken.setString("++");
                     rToken.setCol(stringColCounter);
                     rToken.setLine(stringLineCounter);
                     rToken.setType(4);//operator
                 }
-                //add '==' to symbol table
+                //add '++' to symbol table
                 else if(ch !='+')
                 {
-                    rToken.setString(" +");
+                    rToken.setString("+");
                     rToken.setCol(stringColCounter);
                     rToken.setLine(stringLineCounter);
                     rToken.setType(4);//operator
@@ -204,10 +196,11 @@ public class MyScanner
                 break;
 
             case '-':
-                ch =getInput();
+                ch =glanceInput();
                 if(ch=='-')
                 {
                     //add -- to file
+                    getInput();
                     rToken.setString("--");
                     rToken.setCol(stringColCounter);
                     rToken.setLine(stringLineCounter);
@@ -243,12 +236,14 @@ public class MyScanner
                     number+=ch; //value is saved as an integer
                     ch=getInput();
                     rToken.setString("number");
+                    ch=glanceInput();
                 }
                 //add number to symbol table
                 rToken.setCol(stringColCounter);
                 rToken.setLine(stringLineCounter);
                 rToken.setType(1);//operator
                 rToken.setVal(number);
+                rToken.setString("number");
                 number="";
                 break;
 
@@ -335,6 +330,12 @@ public class MyScanner
 
                 //add ch to file
                 //advance
+                break;
+            case ',':
+                rToken.setString(",");
+                rToken.setCol(stringColCounter);
+                rToken.setLine(stringLineCounter);
+                rToken.setType(4);
                 break;
             case 38:        //and
                 ch=glanceInput();
@@ -482,7 +483,6 @@ public class MyScanner
         stringColCounter++;
         if(stringIndexCounter <= inputString.length()-1)
         {
-
             c = inputString.charAt(stringIndexCounter++);
             //System.out.println("the character is:" + c);
         }
