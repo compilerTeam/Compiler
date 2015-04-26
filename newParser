@@ -230,32 +230,62 @@ public class MyParser
     }
     private static boolean ConstDecl()
     {//checked
+        System.out.println(input);
         if(input.equals("final")){
             getInput();
+
             if(Type()){
 
                 if(input.equals("identifier")){
                     getInput();
+
                     if(input.equals("=")){
                         getInput();
+
                         if(input.equals("number")||input.equals("Terminal")){
+
+
                             getInput();
-                            return true;
+
+                            if(input.equals(";")) {
+
+                                getInput();
+                                return true;
+                            }
+                            else{
+                                System.out.println("missing ; in line "+token.getLine()+ "and col "+token.getCol());
+                                return false;
+                            }
                         }
-                        System.out.println("initialize via char or integer. error on line"+token.getLine()+"and col"+token.getCol());
+                        else{
+                            System.out.println("initialize via char or integer. error on line"+token.getLine()+"and col"+token.getCol());
+                            return false;
+                        }
+
+                    }
+                    else{
+                        System.out.println("initialize needs'=' symbol. error on line"+token.getLine()+"and col"+token.getCol());
                         return false;
                     }
-                    System.out.println("initialize needs'=' symbol. error on line"+token.getLine()+"and col"+token.getCol());
+
+                }
+                else{
+                    System.out.println("enter identifier after type. error on line"+token.getLine()+"and col"+token.getCol());
                     return false;
                 }
-                System.out.println("enter identifier after type. error on line"+token.getLine()+"and col"+token.getCol());
+
+            }
+            else{
+                System.out.println("enter type at first. error on line"+token.getLine()+"and col"+token.getCol());
                 return false;
             }
-            System.out.println("enter type at first. error on line"+token.getLine()+"and col"+token.getCol());
+
+        }
+        else{
+            System.out.println("declare final const. error on line" + token.getLine() + "and col" + token.getCol());
             return false;
         }
-        System.out.println("declare final const. error on line"+token.getLine()+"and col"+token.getCol());
-        return false;
+
     }
     private static boolean Block()
     {  //dunno if its right or anything...:|
