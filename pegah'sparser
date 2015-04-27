@@ -1,0 +1,1359 @@
+
+package com.company;
+public class MyParser
+{
+    private static String input ;
+    private static Token token;
+    public static void parse()
+    {
+        getInput();
+        if(program() && input.equals("eof") )
+            System.out.print("accept!");
+        else
+            System.out.print("error!!");
+    }
+    public static void error()
+    {
+        //
+    }
+    public static boolean program()
+    {
+        boolean r = true;
+        while(!input.equals("eof"))
+        {
+            if(input.equals("final"))
+            {
+                r &= ConstDecl();
+            }
+            if(input.equals("char") || input.equals("int") || input.equals("float"))
+            {
+                 r &= VarDecl();
+            }
+            if(input.equals("class"))
+            {
+                r &=  ClassDecl();
+            }
+            if(input.equals("function"))
+            {
+                r &=  MethodDecl();
+            }
+        }
+        System.out.println("the out put of programm is:" + r);
+        return r;
+    }
+    //sarah speaks B-) : this method is extra, so commented it!
+    ///////////////////nonterminal's functions   /// input = akharin tokene khande nashode!
+    private static void getInput()
+    {
+        token = MyScanner.advance();
+        input = token.getString();
+    }
+    private static boolean VarDecl()
+    {
+        if(Type())
+        {
+            if(input.equals("identifier"))
+            {
+                getInput();
+                    while((!input.equals(";")))
+                    {
+                        if(input .equals(","))
+                        {
+                            getInput();
+                            if(input.equals("identifier"))
+                            {
+                                getInput();
+                                continue;
+                            }
+                            else
+                            {
+                                return false;   //id ,,
+                            }
+                        }
+                        else
+                        {
+                            return false;  //id!
+                        }
+                    }
+                    getInput();
+                    return true;
+
+            }
+        }
+        return false;
+    } //checked
+    private static boolean MethodDecl()
+    {
+        getInput();
+        if(input.equals("void"))
+        {
+            getInput();
+            if(input.equals("identifier"))
+            {
+                getInput();
+                if(input.equals("("))
+                {
+                    getInput();
+                    if(input.equals(")")){
+                        getInput();
+                        return Block();
+                    }
+                    else if(input.equals("char") || input.equals("int") || input.equals("float"))
+                    {
+                        if(ArgsForm())
+                        {
+                            if(input.equals(")"))
+                            {
+                                getInput();
+                                return Block();
+                            }
+                            else
+                            {
+                                System.out.println("missing ) 2");
+                                return false;
+                            }
+                        }
+                    }
+                    else{
+                        System.out.println("error argsForm");
+                        return false;
+                    }
+                }
+            }
+        }
+        else if(input.equals("char") || input.equals("int") || input.equals("float"))
+        {
+            if(Type())
+            {
+                if(input.equals("identifier"))
+                {
+                    getInput();
+                    if(input.equals("("))
+                    {
+                        getInput();
+                        if(input.equals(")"))
+                        {   //o arg!
+                            getInput();
+                            return Block();
+                        }
+                        else if(input.equals("char") || input.equals("int") || input.equals("float"))
+                        {
+                            if(ArgsForm())
+                            {
+                                if(input.equals(")"))
+                                {
+                                    getInput();
+                                    return Block();
+                                }
+                                else
+                                {
+                                    System.out.println("missing ) 3");
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            System.out.println("error on MethodDecl1");
+            return false;
+        }
+        System.out.println("error on MethodDecl2");
+        return false;
+    }
+    private static boolean Type()
+    {
+        if(input.equals("char") || input.equals("float") || input.equals("int"))
+        {
+            getInput();
+            if(input.equals("["))
+            {
+                getInput();
+                if(input.equals("]"))
+                {
+                    getInput();
+                    return true;
+                }
+                else
+                {
+                    System.out.println("] baste nazashtin!");
+                    return false;
+                }
+            }
+            else
+            {
+                return true;
+            }
+        }
+        return false;
+    } //checked
+    private static boolean Addop()
+    {
+        if(input.equals("+"))
+        {
+            getInput();
+            return true;
+        }
+        else if(input.equals("-"))
+        {
+            getInput();
+            return true;
+        }
+        else
+        {
+            System.out.print("not true operation!");
+            return false;
+        }
+    }
+    public static boolean Mulop()
+    {
+        if(input.equals("*")||input.equals("&")||input.equals("%")){
+            getInput();
+            return true;
+        }
+        System.out.println("not true operator" + "in line" + token.getLine() + "in col " + token.getCol());
+        return false;
+    }//checked
+    public static boolean Relop()
+    {//checked
+        if(input.equals("=")||input.equals("==")||input.equals("!=")||input.equals("<")||input.equals("<=")||input.equals(">")||input.equals(">=")){
+            getInput();
+            return true;}
+        System.out.print("not true operator");
+        return false;
+    }
+    public static boolean CondTerm()
+    {//checked
+        if(CondFact()){
+            while(input.equals("&&")) {
+                getInput();
+                if(CondFact())
+                    continue;
+                else{
+                    System.out.println("some fact is missing in condition line"+token.getLine()+"and col"+token.getCol());
+                    return false;
+                }
+            }
+            return true;
+        }
+        System.out.println("there must be a condition fact here in line"+token.getLine()+"and col"+token.getCol());
+        return false;
+
+    }
+    private static boolean ConstDecl()
+    {//checked
+
+        if(input.equals("final"))
+        {
+            getInput();
+
+            if(Type())
+            {
+                if(input.equals("identifier"))
+                {
+                    getInput();
+
+                    if(input.equals("="))
+                    {
+                        getInput();
+                        if(input.equals("number")||input.equals("Terminal"))
+                        {
+                            getInput();
+                            if(input.equals(";"))
+                            {
+                                getInput();
+                                return true;
+                            }
+                            else
+                            {
+                                System.out.println("missing ; in line "+token.getLine()+ "and col "+token.getCol());
+                                return false;
+                            }
+                        }
+                        else
+                        {
+                            System.out.println("initialize via char or integer. error on line"+token.getLine()+"and col"+token.getCol());
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        System.out.println("initialize needs'=' symbol. error on line"+token.getLine()+"and col"+token.getCol());
+                        return false;
+                    }
+                }
+                else
+                {
+                    System.out.println("enter identifier after type. error on line"+token.getLine()+"and col"+token.getCol());
+                    return false;
+                }
+            }
+            else
+            {
+                System.out.println("enter type at first. error on line"+token.getLine()+"and col"+token.getCol());
+                return false;
+            }
+        }
+        else
+        {
+            System.out.println("declare final const. error on line" + token.getLine() + "and col" + token.getCol());
+            return false;
+        }
+    }
+    private static boolean Block()
+    {  //dunno if its right or anything...:|
+        //checked
+        boolean result=true;
+        if(input.equals("{")){
+           getInput();
+            while(input.equals("while") ||input.equals("break")||input.equals("return")
+                    || input.equals(";") ||input.equals("print") || input.equals("read")
+                    || input.equals("{") || input.equals("if") || input.equals("identifier"))
+            {
+
+                 if(Statement()){
+                    result=true;
+                }
+                else{
+                     result=false;
+                 }
+            }
+            if(result==true&&input.equals("}"))
+            {
+                getInput();
+                return true;
+            }
+            else
+            {
+                System.out.println("some } missing in line "+token.getLine()+"and col "+token.getCol());
+                return false;
+            }
+        }
+        System.out.println("expected { in line  "+token.getLine()+"and col "+token.getCol());
+        return false;
+    }
+    private static boolean Factor()
+    {
+        if(input.equals("number"))
+        {
+            getInput();
+            return true;
+        }
+        else if(input.equals("Terminal"))
+        {
+            System.out.println("in factor"+input);
+            getInput();
+            return true;
+        }
+        else if(input.equals("new"))
+        {
+            getInput();
+            if(input.equals("identifier"))
+            {
+                getInput();
+                if(input.equals("["))
+                {
+                    getInput();
+                    if(input.equals("identifier") || input.equals("-") || input.equals("number") ||input.equals("new") || input.equals("("))
+                    {
+                        if(Expression())
+                        {
+                            if(input.equals("]"))
+                            {
+                                getInput();
+                                return true;
+                            }
+                            else
+                            {
+                                System.out.println("] baste nazashtin!,in FActor");
+                                return false;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        System.out.print("missing expression!");
+                        return false;
+                    }
+
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                System.out.println("wrong in Factor missing id!!");
+                return false;
+            }
+        }
+        else if(input.equals("("))
+        {
+            getInput();
+            if(input.equals("identifier") ||  input.equals("-") || input.equals("number") ||input.equals("new") || input.equals("("))
+            {
+                if(Expression())
+                {
+                    if(input.equals(")"))
+                    {
+                        getInput();
+                        return true;
+                    }
+                    else
+                    {
+                        System.out.print("missing )!in Factor/(");
+                        return false;
+                    }
+                }
+            }
+            else
+            {
+                System.out.println("missing expression!!!in factor(");
+                return false;
+            }
+        }
+        else if(input.equals("identifier"))
+        {
+            if(Designator())
+            {
+                if(input.equals("("))
+                {
+                    getInput();
+                    if(input.equals("-") || input.equals("number") ||input.equals("new") || input.equals("("))
+                    {
+                        if(ActPars())
+                        {
+                            if(input.equals(")"))
+                            {
+                                getInput();
+                                return true;
+                            }
+                            else
+                            {
+                                System.out.println(") baste nazashtin!,in FActor,Design");
+                                return false;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        System.out.println("warnning:() with no ActPART");
+                        if(input.equals(")"))
+                        {
+                            getInput();
+                            return true;
+                        }
+                        else
+                        {
+                            System.out.println(") baste nazashtin!,in FActor,Design");
+                            return false;
+                        }
+                    }
+                }
+                else
+                {
+                    System.out.println("warnning: no (), no ActPART");
+                    return true;
+                }
+            }
+            else
+            {
+                /////////////////what to DO?inja age designator qalat bashe!tokenemun az dast mire!
+                System.out.println("wrong designator!");
+                return false;
+            }
+        }
+        System.out.println("what R U doing in factor?!");
+        return false;
+    }
+    private static boolean CondFact()
+    {
+        if(input.equals("-") ||input.equals("identifier")||input.equals("Terminal")
+                || input.equals("number") ||input.equals("new") || input.equals("("))//first(exp)
+        {
+            if(Expression())
+            {
+                if(Relop())
+                {
+                    if(input.equals("-") ||input.equals("identifier")||input.equals("Terminal")
+                            || input.equals("number") ||input.equals("new") || input.equals("("))//first(exp)
+                    {
+                        if(Expression())
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            System.out.println("wrong 2'nd exp in condition!");
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        System.out.println("missing 2'nd conditional exp!");
+                        return false;
+                    }
+                }
+                else
+                {
+                    System.out.println("missing/wrong Relop!");
+                    return false;
+                }
+            }
+            else
+            {
+                System.out.println("wrong 1'st exp in condition!");
+                return false;
+            }
+        }
+        else
+        {
+            System.out.println("missing conditional expression!");
+            return false;
+        }
+    }
+    private static boolean Condition()
+    {
+        if(input.equals("-") ||input.equals("identifier")||input.equals("Terminal")
+                || input.equals("number") ||input.equals("new") || input.equals("("))//first(CondTerm)
+        {
+            if(CondTerm())
+            {
+                if(input.equals("||"))//||
+                {
+                    getInput();
+                    if(input.equals("-") ||input.equals("identifier")||input.equals("Terminal")
+                            || input.equals("number") ||input.equals("new") || input.equals("("))//first(CondTerm)
+                    {
+                        while(CondTerm())
+                        {
+                            if(input.equals("||"))
+                            {
+                                getInput();
+                                if(input.equals("-") ||input.equals("identifier")||input.equals("Terminal")
+                                        || input.equals("number") ||input.equals("new") || input.equals("("))//first(CondTerm)
+                                {
+                                    continue;
+                                }
+                                else
+                                {
+                                    System.out.println("no CondTerm after||!");
+                                    return false;
+                                }
+                            }
+                            else if(input.equals(")"))//follow(Condition)
+                            {
+                                return true;
+                            }
+                            else
+                            {
+                                System.out.println("wrong conditon!/no condterm");
+                                return false;
+                            }
+                        }
+                        System.out.println("wrong CondTerm!");
+                        return false;
+                    }
+                    else
+                    {
+                        System.out.println("no CondTerm after ||!");
+                        return false;
+                    }
+                }
+                else if(input.equals(")"))//follow(Condition)
+                {
+                    return true;
+                }
+                else
+                {
+                    System.out.println("wrong CondTerm");
+                    return false;
+                }
+            }
+            else
+            {
+                System.out.println("wrong CondTerm!");
+                return false;
+            }
+        }
+        else
+        {
+            System.out.println("wrong Condition/no CondTerm!");
+            return false;
+        }
+    }
+    private static boolean Statement()
+    {
+        if(input.equals("identifier"))
+        {
+            if(Designator())
+            {
+                if(input.equals("="))
+                {
+                    getInput();
+                    if(input.equals("-") ||input.equals("identifier")||input.equals("Terminal")
+                            || input.equals("number") ||input.equals("new") || input.equals("("))//first(exp)
+                    {
+                        if(Expression())
+                        {
+                            if(input.equals(";"))
+                            {
+                                getInput();
+                                return true;
+                            }
+                            else
+                            {
+                                System.out.println("missing ; in statement!");
+                                return false;
+                            }
+                        }
+                        else
+                        {
+                            System.out.println("wrong exp in satement!");
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        System.out.println("missing exp");
+                        return false;
+                    }
+                }
+                else if(input.equals("("))
+                {
+                    getInput();
+                    if(input.equals("-") ||input.equals("identifier")||input.equals("Terminal")
+                            || input.equals("number") ||input.equals("new") || input.equals("("))//first(ActPars)
+                    {
+                        if(Expression())
+                        {
+                            if(input.equals(")"))
+                            {
+                                getInput();
+                                if(input.equals(";"))
+                                {
+                                    getInput();
+                                    return true;
+                                }
+                                else
+                                {
+                                    System.out.println("missing ;");
+                                    return false;
+                                }
+                            }
+                            else
+                            {
+                                System.out.println("missing )");
+                                return false;
+                            }
+                        }
+                        else
+                        {
+                            System.out.println("wrong expression");
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        if(input.equals(")"))
+                        {
+                            getInput();
+                            if(input.equals(";"))
+                            {
+                                getInput();
+                                return true;
+                            }
+                            else
+                            {
+                                System.out.println("missing ;");
+                                return false;
+                            }
+                        }
+                        else
+                        {
+                            System.out.println("missing )");
+                            return false;
+                        }
+                    }
+                }
+                else if(input.equals("++"))
+                {
+                    getInput();
+                    if(input.equals(";"))
+                    {
+                        getInput();
+                        return true;
+                    }
+                    else
+                    {
+                        System.out.println("missing ;");
+                        return false;
+                    }
+
+                }
+                else if(input.equals("--"))
+                {
+                    getInput();
+                    if(input.equals(";"))
+                    {
+                        getInput();
+                        return true;
+                    }
+                    else
+                    {
+                        System.out.println("missing ;");
+                        return false;
+                    }
+                }
+            }
+            else
+            {
+                System.out.println("wrong designator in statement!");
+                return false;
+            }
+        }
+        else if(input.equals("if"))
+        {
+            getInput();
+            if(input.equals("("))
+            {
+                getInput();
+                if(input.equals("-") ||input.equals("identifier")||input.equals("Terminal")
+                        || input.equals("number") ||input.equals("new") || input.equals("("))//first(Condition)
+                {
+                    if (Condition())
+                    {
+                        if(input.equals(")"))
+                        {
+                            getInput();
+                            if(input.equals("while") ||input.equals("break")||input.equals("return")
+                                    || input.equals(";") ||input.equals("print") || input.equals("read")
+                                    || input.equals("{") || input.equals("if") || input.equals("identifier"))//first(statement)
+                            {
+                                if(Statement())
+                                {
+                                    if(input.equals("else"))
+                                    {
+                                        getInput();
+                                        if(input.equals("while") ||input.equals("break")||input.equals("return")
+                                                || input.equals(";") ||input.equals("print") || input.equals("read")
+                                                || input.equals("{") || input.equals("if") || input.equals("identifier"))//first(statement)
+                                        {
+                                            if(Statement())
+                                            {
+                                                return true;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            System.out.println("missing statement on else if!");
+                                            return false;
+                                        }
+                                    }
+                                    else
+                                    {   //check follow?!
+                                        return true;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                System.out.println("missing statement!in if!");
+                                return false;
+                            }
+                        }
+                        else
+                        {
+                            System.out.println("missing ) in if!");
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        System.out.println("wrong condition in if");
+                        return false;
+                    }
+                }
+                else
+                {
+                    System.out.println("missing condition in if");
+                    return false;
+                }
+            }
+            else
+            {
+                System.out.println("missing ( in if");
+                return false;
+            }
+        }
+        else if(input.equals("while"))
+        {
+            getInput();
+            if(input.equals("("))
+            {
+                getInput();
+                if(input.equals("-") ||input.equals("identifier")||input.equals("Terminal")
+                        || input.equals("number") ||input.equals("new") || input.equals("("))//first(exp)
+                {
+                    if(Condition())
+                    {
+                        if(input.equals(")"))
+                        {
+                            getInput();
+                            if(input.equals("while") ||input.equals("break")||input.equals("return")
+                                    || input.equals(";") ||input.equals("print") || input.equals("read")
+                                    || input.equals("{") || input.equals("if") || input.equals("identifier"))//first(statement)
+                            {
+                                if(Statement())
+                                {
+                                    return true;
+                                }
+                                else
+                                {
+                                    System.out.println("wrong while statement!");
+                                    return false;
+                                }
+                            }
+                            else
+                            {
+                                System.out.println("warning:no statement in while?!");
+                                return false;
+                            }
+                        }
+                        else
+                        {
+                            System.out.println("missing ) on while");
+                        }
+                    }
+                    else
+                    {
+                        System.out.println("wrong condition im while!");
+                        return false;
+                    }
+                }
+                else
+                {
+                    System.out.println("missing Condition on while");
+                    return false;
+                }
+
+            }
+            else
+            {
+                System.out.println("missing (in while");
+                return false;
+            }
+        }
+        else if(input.equals("break"))
+        {
+            getInput();
+            if(input.equals(";"))
+            {
+                getInput();
+                return true;
+            }
+            else
+            {
+                System.out.println("missing ; in break");
+                return false;
+            }
+        }
+        else if(input.equals("return"))
+        {
+            getInput();
+            if(input.equals("-") ||input.equals("identifier")||input.equals("Terminal")
+                    || input.equals("number") ||input.equals("new") || input.equals("("))//first(exp)
+            {
+                if(Expression())
+                {
+                    if(input.equals(";"))
+                    {
+                        getInput();
+                        return true;
+                    }
+                    else
+                    {
+                        System.out.println("miising ; in return!");
+                        return false;
+                    }
+                }
+                else
+                {
+                    System.out.println("wrong return exp!");
+                    return false;
+                }
+            }
+            else
+            {
+                if(input.equals(";"))
+                {
+                    getInput();
+                    return true;
+                }
+                else
+                {
+                    System.out.println("miising ; in return!");
+                    return false;
+                }
+            }
+        }
+        else if(input.equals("print"))
+        {
+            getInput();
+            if(input.equals("("))
+            {
+                getInput();
+                if(input.equals("-") ||input.equals("identifier")||input.equals("Terminal")
+                        || input.equals("number") ||input.equals("new") || input.equals("("))//first(exp)
+                {
+                    if(Expression())
+                    {
+                        if(input.equals(","))
+                        {
+                            getInput();
+                            if(input.equals("number"))
+                            {
+                                getInput();
+                                if(input.equals(")"))
+                                {
+                                    getInput();
+                                    if(input.equals(";"))
+                                    {
+                                        getInput();
+                                        return true;
+                                    }
+                                    else
+                                    {
+                                        System.out.println("missing ;");
+                                        return false;
+                                    }
+                                }
+                                else
+                                {
+                                    System.out.println("missing ) in print!");
+                                    return false;
+                                }
+                            }
+                            else
+                            {
+                                System.out.println("missing num in print!");
+                                return false;
+                            }
+                        }
+                        else
+                        {
+                            if(input.equals(")"))
+                            {
+                                getInput();
+                                if(input.equals(";"))
+                                {
+                                    getInput();
+                                    return true;
+                                }
+                                else
+                                {
+                                    System.out.println("missing ;");
+                                    return false;
+                                }
+                            }
+                            else
+                            {
+                                System.out.println("missing ) in print!2");
+                                return false;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        System.out.println("wrong exp in print!");
+                        return false;
+                    }
+                }
+                else
+                {
+                    System.out.println("missing exp while print!");
+                    return false;
+                }
+            }
+            else
+            {
+                System.out.println("missing ( in print!");
+                return false;
+            }
+        }
+        else if(input.equals("read"))
+        {
+            getInput();
+            if(input.equals("("))
+            {
+                getInput();
+                if(input.equals("identifier"))
+                {
+                    if(Designator())
+                    {
+                        if(input.equals(")"))
+                        {
+                            getInput();
+                            if(input.equals(";"))
+                            {
+                                getInput();
+                                return true;
+                            }
+                            else
+                            {
+                                System.out.println("missing ; in statement!");
+                                return false;
+                            }
+                        }
+                        else
+                        {
+                            System.out.println("missing ) in statement!");
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        System.out.println("wrong Designator in statement!");
+                    }
+                }
+                else
+                {
+                    System.out.println("no Designator!");
+                    return false;
+                }
+            }
+            else
+            {
+                System.out.println("missing (");
+                return false;
+            }
+        }
+        else if(input.equals(";"))
+        {
+            getInput();
+            return true;
+        }
+        else if(input.equals("{"))//first(Block)
+        {
+            if(Block())
+                return true;
+        }
+        else
+        {
+            System.out.println("wrong statement sig!");
+            return false;
+        }
+        return false;
+    }
+    private static boolean Expression()
+    {
+        if(input.equals("-"))
+        {
+            getInput();
+            if(input.equals("identifier")||input.equals("Terminal") || input.equals("number") ||input.equals("new") || input.equals("("))
+            {
+                if(Term())
+                {
+                    if(input.equals("+") || input.equals("-")) //AddOp!
+                    {
+                        while(Addop())
+                        {
+                            if(input.equals("identifier")||input.equals("Terminal") || input.equals("number") ||input.equals("new") || input.equals("("))
+                            {
+                                if(Term())
+                                {
+                                    if(input.equals("+") || input.equals("-"))
+                                    {
+                                        continue;
+                                    }
+                                    else if(input.equals(";") || input.equals(",") || input.equals("==") ||
+                                            input.equals("!=")||input.equals("<")||input.equals("<=")||input.equals(">")||input.equals(">="))//follow(Expression)
+                                    {
+                                        return true;
+                                    }
+                                    else
+                                    {
+                                        System.out.println("wrong exp5" + token.getCol() + "in line "+ token.getLine());
+                                        return false;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                System.out.println("missing term!"+"in col "+token.getCol() + "in line "+ token.getLine());
+                                return false;
+                            }
+                        }
+                        return false;
+                    }
+                    else
+                    {
+                        return true;
+                    }
+                }
+                else
+                {
+                    System.out.println("wrong Term in expression!");
+                    return false;
+                }
+            }
+            else
+            {
+                System.out.println("no term in expression"+"in col"+ token.getCol() + "in line "+ token.getLine());
+                return false;
+            }
+        }
+        else
+        {
+            if(input.equals("identifier")||input.equals("Terminal") || input.equals("number") ||input.equals("new") || input.equals("("))
+            {
+                if(Term())
+                {
+                    if(input.equals("+") || input.equals("-")) //AddOp!
+                    {
+                        while(Addop())
+                        {
+                            if(input.equals("identifier")||input.equals("Terminal") || input.equals("number") ||input.equals("new") || input.equals("("))
+                            {
+                                if(Term())
+                                {
+                                    if(input.equals("+") || input.equals("-"))
+                                    {
+                                        continue;
+                                    }
+                                    else if(input.equals(";") || input.equals(",") || input.equals("==") ||
+                                            input.equals("!=")||input.equals("<")||input.equals("<=")||input.equals(">")||input.equals(">="))//follow(Expression)
+                                    {
+                                        return true;
+                                    }
+                                    else
+                                    {
+                                        System.out.println("wrong exp4"+ token.getCol() + "in line "+ token.getLine());
+                                        return false;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                System.out.println("missing term!");
+                                return false;
+                            }
+                        }
+                        return false;
+                    }
+                    else
+                    {
+                        return true;
+                    }
+                }
+                else
+                {
+                    System.out.println("wrong Term in expression!");
+                    return false;
+                }
+            }
+            else
+            {
+                System.out.println("no term in expression"+"in col"+ token.getCol() + "in line "+ token.getLine());
+                return false;
+            }
+        }
+    }
+    private static boolean ClassDecl()
+    {
+        getInput();
+        if(input.equals("identifier")){
+            getInput();
+            if(input.equals("{")){
+                getInput();
+                while(VarDecl()){
+
+                }
+                if(input.equals("}")){
+                    getInput();
+                    return true;
+                }
+                else{
+                    System.out.println("not matching {} in line"+token.getLine()+"an col"+token.getCol());
+                    return false;
+                }
+            }
+            else{
+                System.out.println("lost { in line"+token.getLine()+"an col"+token.getCol());
+                return false;
+            }
+        }
+        else{
+            System.out.println("enter identifier in line" + token.getLine() + " and col" + token.getCol());
+            return false;
+        }
+    }
+    private static boolean ArgsForm()
+    {//checked
+        if(input.equals("char") || input.equals("int") || input.equals("float"))//first(Type)
+        {
+            boolean onLoop = false;
+            do
+            {
+                if(Type())
+                {
+                    if(input.equals("identifier"))
+                    {
+                        getInput();
+                        if(input.equals(","))
+                        {
+                            getInput();
+                            if(input.equals("char") || input.equals("int") || input.equals("float"))//first(Type)
+                            {
+                                onLoop = true;
+                            }
+                            else
+                            {
+                                onLoop = false;
+                            }
+                        }
+                        else
+                        {
+                            onLoop = false;
+                        }
+                    }
+                }
+
+            }while(onLoop);
+            if(input.equals(")"))//follow(ArgsForm)
+            {
+                return true;
+            }
+            else
+            {
+                System.out.println("wrong Args sig!" + "line " + token.getLine() + "col" + token.getCol());
+                return false;
+            }
+        }
+        else
+        {
+            System.out.println("enter Type of ur identifier!"+" in col "+token.getCol() + " in line" + token.getLine());
+            return false;
+        }
+    }
+    private static boolean ActPars()
+    {//checked
+        boolean result=false;
+        if(Expression()){
+            result=true;
+            if(input.equals(",")) {
+                result=false;
+                while(input.equals(",")){
+                    getInput();
+                    if(Expression()){
+                        result=true;
+                    }
+                    else{
+                        result=false;
+                        System.out.println("expression expected in line"+token.getLine()+ "and col"+token.getCol());
+                        break;
+                    }
+                }
+                return result;
+            }
+            else{
+                return result;
+            }
+        }
+        else{
+            System.out.println("expression expected in line"+token.getLine()+ "and col"+token.getCol());
+            result=false;
+        }
+        return result;
+    }
+    private static boolean Term()
+    {//problem
+        boolean result=false;
+        //if(first(Factor56456565)
+        if(Factor()){
+            result=true;
+
+            if(input.equals("/")||input.equals("%")||input.equals("*")){
+                result=false;
+                while(Mulop()){
+                    if(Factor()){
+                        result=true;
+                        continue;
+                    }
+                    else{
+                        result=false;
+                        System.out.println("Factor expected here");
+                        //error occures:|
+                    }
+                }
+            }
+            else{
+                //do nothing. no loop occures here.
+            }
+        }
+        else{
+            result=false;
+            System.out.println("Factor expected here");
+        }
+
+        return result;
+    }
+    private static boolean Designator()
+    {//checked
+        if(input.equals("identifier")){
+            boolean result=true;
+            getInput();
+            if(input.equals("."))
+            {
+                while(input.equals(".")){
+                    if(input.equals(".")){
+                        getInput();
+                        if(input.equals("identifier")){
+                            continue;
+                        }
+                        else{
+                            System.out.println("missing identifier in line"+token.getLine()+"and col"+token.getCol());
+                            result=false;
+                            break;
+                        }
+                    }
+                    else{//expression is true!
+                    continue;
+                   }
+                }
+            }
+            else if(input.equals("["))
+            {
+                getInput();
+                if(input.equals("-") ||input.equals("identifier")||input.equals("Terminal")
+                        || input.equals("number") ||input.equals("new") || input.equals("("))//first(exp)
+                {
+                    if(Expression())
+                    {
+                        if(input.equals("]"))
+                        {
+                            getInput();
+                            return true;
+                        }
+                        else
+                        {
+                            System.out.println("missing ]"+"in col"+ token.getCol() + "in line "+ token.getLine());
+                        }
+                    }
+                    else
+                    {
+                        System.out.println("wrong exp in Designator"+"in col"+ token.getCol() + "in line "+ token.getLine());
+                        return false;
+                    }
+                }
+            }
+
+            return result;
+        }
+        return false;
+    }
+}//end class
