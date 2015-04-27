@@ -4,6 +4,174 @@ public class MyParser
 {
     private static String input ;
     private static Token token;
+
+    public static boolean isFollow(String nonTerminal,String tml)
+    {
+        if(nonTerminal.equals("ConstDecl"))
+        {
+            if(tml.equals("eof") || tml.equals("int") || tml.equals("char") || tml.equals("float") || tml.equals("final") ||tml.equals("class")
+                    ||tml.equals("function"))
+            {
+                return true;
+            }
+            return false;
+        }
+        if(nonTerminal.equals("VarDecl"))
+        {
+            if(tml.equals("}") || tml.equals("eof") || tml.equals("int") || tml.equals("char") || tml.equals("float") || tml.equals("final") ||tml.equals("class")
+                ||tml.equals("function"))
+            {
+                return true;
+            }
+            return false;
+        }
+        if(nonTerminal.equals("MethodDecl"))
+        {
+            if(tml.equals("eof") || tml.equals("int") || tml.equals("char") || tml.equals("float") || tml.equals("final") ||tml.equals("class")
+                    ||tml.equals("function"))
+            {
+                return true;
+            }
+            return false;
+        }
+        if(nonTerminal.equals("ArgsForm"))
+        {
+            if(tml.equals(")"))
+            {
+                return true;
+            }
+            return false;
+        }
+        if(nonTerminal.equals("Type"))
+        {
+            if(tml.equals("identifier"))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        if(nonTerminal.equals("Block"))
+        {
+            if(tml.equals("}") || tml.equals("else") ||tml.equals("eof") || tml.equals("int")
+                    || tml.equals("char") || tml.equals("float") || tml.equals("final") ||tml.equals("class")
+                    ||tml.equals("function"))
+            {
+                return true;
+            }
+            return false;
+        }
+        if(nonTerminal.equals("Statement"))
+        {
+            if(tml.equals("}") || tml.equals("else"))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        if(nonTerminal.equals("ActPars"))
+        {
+            if(tml.equals(")"))
+            {
+                return true;
+            }
+            return false;
+        }
+        if(nonTerminal.equals("Condition"))
+        {
+            if(tml.equals(")"))
+            {
+                return true;
+            }
+            return false;
+        }
+        if(nonTerminal.equals("CondTerm"))
+        {
+            if(tml.equals("||"))
+            {
+                return true;
+            }
+            return false;
+        }
+        if(nonTerminal.equals("CondFact"))
+        {
+            if(tml.equals("&&") || tml.equals("||"))
+            {
+                return true;
+            }
+            return false;
+        }
+        if(nonTerminal.equals("Relop"))
+        {
+            if(tml.equals("-") ||tml.equals("identifier")||tml.equals("Terminal")
+                    || tml.equals("number") ||tml.equals("new") || tml.equals("("))
+            {
+                return true;
+            }
+            return false;
+        }
+        if(nonTerminal.equals("Term"))
+        {
+            if(tml.equals("!=") || tml.equals("==") ||tml.equals("]") || tml.equals("++") ||tml.equals("--")
+                    ||tml.equals(",") ||tml.equals(";") || tml.equals("&&") ||tml.equals("||") || tml.equals(")")
+                        || tml.equals(">=") || tml.equals("<=") || tml.equals("==") ||tml.equals("=")
+                    || tml.equals("<") || tml.equals(">"))//follow (Term)
+            {
+                return true;
+            }
+            return false;
+        }
+        if(nonTerminal.equals("Factor"))
+        {
+            if(tml.equals("*") ||tml.equals("%") || tml.equals("/") || tml.equals("!=") || tml.equals("==") ||tml.equals("]") || tml.equals("++") ||tml.equals("--")
+                    ||tml.equals(",") ||tml.equals(";") || tml.equals("&&") ||tml.equals("||") || tml.equals(")")
+                    || tml.equals(">=") || tml.equals("<=") || tml.equals("==") ||tml.equals("=")
+                    || tml.equals("<") || tml.equals(">") )//follow(Factor)
+            {
+                return true;
+            }
+            return false;
+        }
+        if(nonTerminal.equals("Designator"))
+        {
+            if(tml.equals(")")||tml.equals("(")||tml.equals("++")||tml.equals("--"))
+            {
+                return true;
+            }
+            return false;
+        }
+        if(nonTerminal.equals("Addop"))
+        {
+            if(tml.equals("identifier")||tml.equals("Terminal")
+                    || tml.equals("number") ||tml.equals("new") || tml.equals("(")) //first(Term)
+            {
+                return true;
+            }
+            return false;
+        }
+        if(nonTerminal.equals("Mulop"))
+        {
+            if(tml.equals("identifier")||tml.equals("Terminal")
+                    || tml.equals("number") ||tml.equals("new") || tml.equals("("))
+            {
+                return true;
+            }
+            return false;
+        }
+        if(nonTerminal.equals("ClassDecl"))
+        {
+            if(tml.equals("eof") || tml.equals("int") || tml.equals("char") || tml.equals("float") || tml.equals("final") ||tml.equals("class")
+                    ||tml.equals("function"))
+            {
+                return true;
+            }
+            return false;
+        }
+        else
+            return false; //nonTerminal was incorrect
+    }
+
     public static void parse()
     {
         getInput();
@@ -11,11 +179,12 @@ public class MyParser
             System.out.print("accept!");
         else
             System.out.print("error!!");
-    }
-    public static void error()
+    }    //ended
+    public static void error(String str)
     {
-        //
-    }
+        System.err.print(str);
+
+    }    //ended
     public static boolean program()
     {
         boolean r = true;
@@ -27,7 +196,7 @@ public class MyParser
             }
             if(input.equals("char") || input.equals("int") || input.equals("float"))
             {
-                 r &= VarDecl();
+                r &= VarDecl();
             }
             if(input.equals("class"))
             {
@@ -38,16 +207,15 @@ public class MyParser
                 r &=  MethodDecl();
             }
         }
-        System.out.println("the out put of programm is:" + r);
+        System.out.println("the out put of program is:" + r);
         return r;
-    }
-    //sarah speaks B-) : this method is extra, so commented it!
-    ///////////////////nonterminal's functions   /// input = akharin tokene khande nashode!
+    }      //ended
+
     private static void getInput()
     {
         token = MyScanner.advance();
         input = token.getString();
-    }
+    }       //ended
     private static boolean VarDecl()
     {
         if(Type())
@@ -55,28 +223,29 @@ public class MyParser
             if(input.equals("identifier"))
             {
                 getInput();
-                    while((!input.equals(";")))
+                while((!input.equals(";")))
+                {
+                    if(input .equals(","))
                     {
-                        if(input .equals(","))
+                        getInput();
+                        if(input.equals("identifier"))
                         {
                             getInput();
-                            if(input.equals("identifier"))
-                            {
-                                getInput();
-                                continue;
-                            }
-                            else
-                            {
-                                return false;   //id ,,
-                            }
+                            continue;
                         }
                         else
                         {
-                            return false;  //id!
+                            error("needed identifier in line "+token.getLine()+"and col "+token.getCol());
+                            return false;   //id ,,
                         }
                     }
-                    getInput();
-                    return true;
+                    else
+                    {
+                        return false;  //id!
+                    }
+                }
+                getInput();
+                return true;
 
             }
         }
@@ -98,15 +267,20 @@ public class MyParser
                         getInput();
                         return Block();
                     }
-                    if(ArgsForm())
+                    else if(input.equals("char") || input.equals("int") || input.equals("float"))
                     {
-                        if(input.equals(")"))
+                        if(ArgsForm())
                         {
-                            return Block();
-                        }
-                        else{
-                            System.out.println("missing )");
-                            return false;
+                            if(input.equals(")"))
+                            {
+                                getInput();
+                                return Block();
+                            }
+                            else
+                            {
+                                System.out.println("missing ) 2");
+                                return false;
+                            }
                         }
                     }
                     else{
@@ -116,26 +290,36 @@ public class MyParser
                 }
             }
         }
-        else if(Type())
+        else if(input.equals("char") || input.equals("int") || input.equals("float"))
         {
-            if(input.equals("identifier"))
+            if(Type())
             {
-                getInput();
-                if(input.equals("("))
+                if(input.equals("identifier"))
                 {
-
                     getInput();
-                    if(input.equals(")"))
+                    if(input.equals("("))
                     {
                         getInput();
-                        return Block();
-                    }
-                    else if(ArgsForm())
-                    {
                         if(input.equals(")"))
-                        {
+                        {   //o arg!
                             getInput();
                             return Block();
+                        }
+                        else if(input.equals("char") || input.equals("int") || input.equals("float"))
+                        {
+                            if(ArgsForm())
+                            {
+                                if(input.equals(")"))
+                                {
+                                    getInput();
+                                    return Block();
+                                }
+                                else
+                                {
+                                    System.out.println("missing ) 3");
+                                    return false;
+                                }
+                            }
                         }
                     }
                 }
@@ -205,8 +389,10 @@ public class MyParser
     public static boolean Relop()
     {//checked
         if(input.equals("=")||input.equals("==")||input.equals("!=")||input.equals("<")||input.equals("<=")||input.equals(">")||input.equals(">=")){
+
             getInput();
-            return true;}
+            return true;
+        }
         System.out.print("not true operator");
         return false;
     }
@@ -224,13 +410,12 @@ public class MyParser
             }
             return true;
         }
-        System.out.println("there must be a condition fact here in line"+token.getLine()+"and col"+token.getCol());
+        System.out.println("there must be a condition fact here in line" + token.getLine() + "and col" + token.getCol());
         return false;
 
     }
     private static boolean ConstDecl()
     {//checked
-        
         if(input.equals("final")){
             getInput();
 
@@ -290,19 +475,22 @@ public class MyParser
     private static boolean Block()
     {  //dunno if its right or anything...:|
         //checked
-        boolean result=false;
+        boolean result=true;
         if(input.equals("{")){
-           getInput();
+            getInput();
             while(input.equals("while") ||input.equals("break")||input.equals("return")
                     || input.equals(";") ||input.equals("print") || input.equals("read")
                     || input.equals("{") || input.equals("if") || input.equals("identifier")){
 
-                 if(Statement()){
+                if(Statement()){
                     result=true;
                 }
                 else{
-                     result=false;
-                 }
+                    System.out.println("statement reported wrong answer here");
+
+                    result=false;
+                    break;
+                }
 
             }
             if(result==true&&input.equals("}")){
@@ -324,7 +512,7 @@ public class MyParser
             getInput();
             return true;
         }
-        else if(input.equals("charConst"))
+        else if(input.equals("Terminal"))
         {
             getInput();
             return true;
@@ -453,14 +641,14 @@ public class MyParser
     }
     private static boolean CondFact()
     {
-        if(input.equals("-") ||input.equals("identifier")||input.equals("charConst")
+        if(input.equals("-") ||input.equals("identifier")||input.equals("Terminal")
                 || input.equals("number") ||input.equals("new") || input.equals("("))//first(exp)
         {
             if(Expression())
             {
                 if(Relop())
                 {
-                    if(input.equals("-") ||input.equals("identifier")||input.equals("charConst")
+                    if(input.equals("-") ||input.equals("identifier")||input.equals("Terminal")
                             || input.equals("number") ||input.equals("new") || input.equals("("))//first(exp)
                     {
                         if(Expression())
@@ -499,7 +687,7 @@ public class MyParser
     }
     private static boolean Condition()
     {
-        if(input.equals("-") ||input.equals("identifier")||input.equals("charConst")
+        if(input.equals("-") ||input.equals("identifier")||input.equals("Terminal")
                 || input.equals("number") ||input.equals("new") || input.equals("("))//first(CondTerm)
         {
             if(CondTerm())
@@ -507,7 +695,7 @@ public class MyParser
                 if(input.equals("||"))//||
                 {
                     getInput();
-                    if(input.equals("-") ||input.equals("identifier")||input.equals("charConst")
+                    if(input.equals("-") ||input.equals("identifier")||input.equals("Terminal")
                             || input.equals("number") ||input.equals("new") || input.equals("("))//first(CondTerm)
                     {
                         while(CondTerm())
@@ -515,7 +703,7 @@ public class MyParser
                             if(input.equals("||"))
                             {
                                 getInput();
-                                if(input.equals("-") ||input.equals("identifier")||input.equals("charConst")
+                                if(input.equals("-") ||input.equals("identifier")||input.equals("Terminal")
                                         || input.equals("number") ||input.equals("new") || input.equals("("))//first(CondTerm)
                                 {
                                     continue;
@@ -569,7 +757,6 @@ public class MyParser
     }
     private static boolean Statement()
     {
-
         if(input.equals("identifier"))
         {
             if(Designator())
@@ -577,7 +764,7 @@ public class MyParser
                 if(input.equals("="))
                 {
                     getInput();
-                    if(input.equals("-") ||input.equals("identifier")||input.equals("charConst")
+                    if(input.equals("-") ||input.equals("identifier")||input.equals("Terminal")
                             || input.equals("number") ||input.equals("new") || input.equals("("))//first(exp)
                     {
                         if(Expression())
@@ -608,10 +795,10 @@ public class MyParser
                 else if(input.equals("("))
                 {
                     getInput();
-                    if(input.equals("-") ||input.equals("identifier")||input.equals("charConst")
+                    if(input.equals("-") ||input.equals("identifier")||input.equals("Terminal")
                             || input.equals("number") ||input.equals("new") || input.equals("("))//first(ActPars)
                     {
-                        if(Expression())
+                        if(ActPars())
                         {
                             if(input.equals(")"))
                             {
@@ -704,7 +891,7 @@ public class MyParser
             if(input.equals("("))
             {
                 getInput();
-                if(input.equals("-") ||input.equals("identifier")||input.equals("charConst")
+                if(input.equals("-") ||input.equals("identifier")||input.equals("Terminal")
                         || input.equals("number") ||input.equals("new") || input.equals("("))//first(Condition)
                 {
                     if (Condition())
@@ -720,6 +907,7 @@ public class MyParser
                                 {
                                     if(input.equals("else"))
                                     {
+                                        getInput();
                                         if(input.equals("while") ||input.equals("break")||input.equals("return")
                                                 || input.equals(";") ||input.equals("print") || input.equals("read")
                                                 || input.equals("{") || input.equals("if") || input.equals("identifier"))//first(statement)
@@ -777,7 +965,7 @@ public class MyParser
             if(input.equals("("))
             {
                 getInput();
-                if(input.equals("-") ||input.equals("identifier")||input.equals("charConst")
+                if(input.equals("-") ||input.equals("identifier")||input.equals("Terminal")
                         || input.equals("number") ||input.equals("new") || input.equals("("))//first(exp)
                 {
                     if(Condition())
@@ -845,14 +1033,17 @@ public class MyParser
         }
         else if(input.equals("return"))
         {
+
             getInput();
-            if(input.equals("-") ||input.equals("identifier")||input.equals("charConst")
+
+            if(input.equals("-") ||input.equals("identifier")||input.equals("Terminal")
                     || input.equals("number") ||input.equals("new") || input.equals("("))//first(exp)
             {
                 if(Expression())
                 {
                     if(input.equals(";"))
                     {
+                        System.out.println("return accepts it");
                         getInput();
                         return true;
                     }
@@ -864,7 +1055,8 @@ public class MyParser
                 }
                 else
                 {
-                    System.out.println("wrong return exp!");
+
+                    System.out.println("wrong return exp here!");
                     return false;
                 }
             }
@@ -888,7 +1080,7 @@ public class MyParser
             if(input.equals("("))
             {
                 getInput();
-                if(input.equals("-") ||input.equals("identifier")||input.equals("charConst")
+                if(input.equals("-") ||input.equals("identifier")||input.equals("Terminal")
                         || input.equals("number") ||input.equals("new") || input.equals("("))//first(exp)
                 {
                     if(Expression())
@@ -1035,15 +1227,16 @@ public class MyParser
         if(input.equals("-"))
         {
             getInput();
-            if(input.equals("identifier")||input.equals("charConst") || input.equals("number") ||input.equals("new") || input.equals("("))
+            if(input.equals("identifier")||input.equals("Terminal") || input.equals("number") ||input.equals("new") || input.equals("("))
             {
                 if(Term())
                 {
+
                     if(input.equals("+") || input.equals("-")) //AddOp!
                     {
                         while(Addop())
                         {
-                            if(input.equals("identifier")||input.equals("charConst") || input.equals("number") ||input.equals("new") || input.equals("("))
+                            if(input.equals("identifier")||input.equals("Terminal") || input.equals("number") ||input.equals("new") || input.equals("("))
                             {
                                 if(Term())
                                 {
@@ -1052,7 +1245,7 @@ public class MyParser
                                         continue;
                                     }
                                     else if(input.equals(";") || input.equals(",") || input.equals("==") ||
-                                            input.equals("!=")||input.equals("<")||input.equals("<=")||input.equals(">")||input.equals(">="))//follow(Expression)
+                                            input.equals("!=")||input.equals("<")||input.equals("<=")||input.equals(">")||input.equals(">=") || input.equals("]"))//follow(Expression)
                                     {
                                         return true;
                                     }
@@ -1088,9 +1281,9 @@ public class MyParser
                 return false;
             }
         }
-        else
+        else //[-]term na! khode term!
         {
-            if(input.equals("identifier")||input.equals("charConst") || input.equals("number") ||input.equals("new") || input.equals("("))
+            if(input.equals("identifier")||input.equals("Terminal") || input.equals("number") ||input.equals("new") || input.equals("("))
             {
                 if(Term())
                 {
@@ -1098,7 +1291,7 @@ public class MyParser
                     {
                         while(Addop())
                         {
-                            if(input.equals("identifier")||input.equals("charConst") || input.equals("number") ||input.equals("new") || input.equals("("))
+                            if(input.equals("identifier")||input.equals("Terminal") || input.equals("number") ||input.equals("new") || input.equals("("))
                             {
                                 if(Term())
                                 {
@@ -1107,12 +1300,13 @@ public class MyParser
                                         continue;
                                     }
                                     else if(input.equals(";") || input.equals(",") || input.equals("==") ||
-                                            input.equals("!=")||input.equals("<")||input.equals("<=")||input.equals(">")||input.equals(">="))//follow(Expression)
+                                            input.equals("!=")||input.equals("<")||input.equals("<=")||input.equals(">")||input.equals(">=") || input.equals("]"))//follow(Expression)
                                     {
                                         return true;
                                     }
                                     else
                                     {
+                                        System.out.println("err on exp"+input);
                                         System.out.println("wrong exp4"+ token.getCol() + "in line "+ token.getLine());
                                         return false;
                                     }
@@ -1133,7 +1327,8 @@ public class MyParser
                 }
                 else
                 {
-                    System.out.println("wrong Term in expression!");
+                    System.out.println(token.getVal()+" "+input);
+                    System.out.println("wrong Term in expression   !");
                     return false;
                 }
             }
@@ -1175,37 +1370,49 @@ public class MyParser
     }
     private static boolean ArgsForm()
     {//checked
-        boolean result=false;
-        if(Type()){
-            if(input.equals("identifier")){
-                result=true;
-                getInput();
-                if(input.equals(",")){
-                    result=false;
-                    getInput();
-                    while(Type()){
-                        if(input.equals("identifier")) {
-                            result=true;
+        if(input.equals("char") || input.equals("int") || input.equals("float"))//first(Type)
+        {
+            boolean onLoop = false;
+            do
+            {
+                if(Type())
+                {
+                    if(input.equals("identifier"))
+                    {
+                        getInput();
+                        if(input.equals(","))
+                        {
                             getInput();
+                            if(input.equals("char") || input.equals("int") || input.equals("float"))//first(Type)
+                            {
+                                onLoop = true;
+                            }
+                            else
+                            {
+                                onLoop = false;
+                            }
                         }
-                        else{
-                            result=false;
-                            System.out.println("missing identifier in line"+token.getLine()+"and col"+token.getCol());
-                            break;
+                        else
+                        {
+                            onLoop = false;
                         }
                     }
-                    return result;
                 }
-                return result;
 
+            }while(onLoop);
+            if(input.equals(")"))//follow(ArgsForm)
+            {
+                return true;
             }
-            else{
-                System.out.println("missing identifier in line"+token.getLine()+"and col"+token.getCol());
+            else
+            {
+                System.out.println("wrong Args sig!" + "line " + token.getLine() + "col" + token.getCol());
                 return false;
             }
         }
-        else{
-            System.out.println("missing type on identifier in line"+token.getLine()+"and col"+token.getCol());
+        else
+        {
+            System.out.println("enter Type of ur identifier!"+" in col "+token.getCol() + " in line" + token.getLine());
             return false;
         }
     }
@@ -1243,87 +1450,111 @@ public class MyParser
     {//problem
         boolean result=false;
         //if(first(Factor56456565)
-        if(Factor()){
-            result=true;
+        if(input.equals("identifier")||input.equals("number")||input.equals("Terminal")||input.equals("new")||input.equals("("))  {
+            if(Factor()){
+                result=true;
 
-            if(input.equals("/")||input.equals("%")||input.equals("*")){
-                result=false;
-                while(Mulop()){
-                    if(Factor()){
-                        result=true;
-                        continue;
+                if(input.equals("/")||input.equals("%")||input.equals("*")){
+                    result=false;
+                    while(Mulop())
+                    {
+                        if(input.equals("identifier")||input.equals("number")||input.equals("Terminal")||input.equals("new")||input.equals("(")) { //first(Factor)
+                            if(Factor()){
+                                result=true;
+                                continue;
+                            }
+                            else{
+                                result=false;
+                                System.out.println("Factor expected here after mulop");
+                                break;
+                                //error occures:|
+                            }
+                        }
+                        else{
+                            System.out.println("enter factor after mulop please");
+                            result=false;
+                            break;
+                        }
+
                     }
-                    else{
-                        result=false;
-                        System.out.println("Factor expected here");
-                        //error occures:|
-                    }
+
+                }
+                else{
+                    //do nothing. no loop occures here.
                 }
             }
             else{
-                //do nothing. no loop occures here.
+                System.out.println("factor reported an error while was called in term");
+                result=false;
             }
         }
         else{
             result=false;
-            System.out.println("Factor expected here");
+            System.out.println("first Factor expected here");
         }
-
+        //System.out.println("after term s finished result is "+result);
         return result;
     }
     private static boolean Designator()
     {//checked
-        if(input.equals("identifier")){
-            boolean result=true;
+        boolean result = true;
+        if(input.equals("identifier"))
+        {
             getInput();
-            if(input.equals("."))
+            while(input.equals(".") || input.equals("["))
             {
-                while(input.equals(".")){
-                    if(input.equals(".")){
-                        getInput();
-                        if(input.equals("identifier")){
-                            continue;
-                        }
-                        else{
-                            System.out.println("missing identifier in line"+token.getLine()+"and col"+token.getCol());
-                            result=false;
-                            break;
-                        }
-                    }
-                    else{//expression is true!
-                    continue;
-                   }
-                }
-            }
-            else if(input.equals("["))
-            {
-                getInput();
-                if(input.equals("-") ||input.equals("identifier")||input.equals("charConst")
-                        || input.equals("number") ||input.equals("new") || input.equals("("))//first(exp)
+                if(input.equals("."))
                 {
-                    if(Expression())
+                    getInput();
+                    if(input.equals("identifier"))
                     {
-                        if(input.equals("]"))
+                        getInput();
+                    }
+                    else
+                    {
+                        System.out.println("missing id after .");
+                        result = false;
+                    }
+                }
+                else if(input.equals("["))
+                {
+                    getInput();
+                    if(input.equals("-") ||input.equals("identifier")||input.equals("Terminal")
+                            || input.equals("number") ||input.equals("new") || input.equals("("))//first(exp)
+                    {
+                        if(Expression())
                         {
-                            getInput();
-                            return true;
+                            if(input.equals("]"))
+                            {
+                                getInput();
+                            }
+                            else
+                            {
+                                System.out.println("] baste ja munde!");
+                                result = false;
+                            }
                         }
                         else
                         {
-                            System.out.println("missing ]"+"in col"+ token.getCol() + "in line "+ token.getLine());
+                            System.out.println("wrong exp on designator");
+                            result = false;
                         }
                     }
                     else
                     {
-                        System.out.println("wrong exp in Designator"+"in col"+ token.getCol() + "in line "+ token.getLine());
-                        return false;
+                        System.out.println("first exp was expected");
+                        result = false;
                     }
                 }
-            }
+                else
+                {
+                    System.out.println("error on designator!");
+                    result = false;
+                }
 
-            return result;
+            }
         }
-        return false;
+        return  result;
     }
 
 
