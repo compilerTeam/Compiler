@@ -1,0 +1,42 @@
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1case
+case '/':
+                ch =glanceInput();
+                if(ch =='/')
+                {
+                    ch = getInput();
+                    rToken.setString("//");
+                    rToken.setLine(stringLineCounter);
+                    rToken.setCol(stringColCounter);
+                    int currentLine = stringLineCounter;
+                    while(ch != 13)
+                    {
+                        System.out.println((int)ch + "ch is");
+                        ch = getInput();
+                    }
+//                    read to the end of line, it's comment!
+//                    advance
+                }
+                else
+                {
+                    //add / to file
+                    rToken.setString("/");
+                    rToken.setCol(stringColCounter);
+                    rToken.setLine(stringLineCounter);
+                    rToken.setType(4);//operator
+                    //advance
+                }
+                break;
+                
+                
+                //**********************************  changed get input in parser  !*******************************************************
+                private static void getInput()
+    {
+        token = MyScanner.advance();
+        input = token.getString();
+        while(input == "//")
+        {
+            token = MyScanner.advance();
+            input = token.getString();
+        }
+    }  
+                
