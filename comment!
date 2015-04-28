@@ -1,42 +1,48 @@
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1case
-case '/':
-                ch =glanceInput();
-                if(ch =='/')
+    private static boolean ClassDecl()
+    {
+        getInput();
+        if(input.equals("identifier")){
+            getInput();
+            if(input.equals("{")){
+                getInput();
+                if(input.equals("int") || input.equals("float") || input.equals("char"))//first(VarDecl)
                 {
-                    ch = getInput();
-                    rToken.setString("//");
-                    rToken.setLine(stringLineCounter);
-                    rToken.setCol(stringColCounter);
-                    int currentLine = stringLineCounter;
-                    while(ch != 13)
+                    while(VarDecl()){}
+                }
+                else//ta akhare class bekhun rad kon!!
+                {
+                    while(!input.equals("}") && !isFollow("ClassDecl",input))//ya follow(class)
                     {
-                        System.out.println((int)ch + "ch is");
-                        ch = getInput();
+                        getInput();
                     }
-//                    read to the end of line, it's comment!
-//                    advance
+                }
+                if(input.equals("}")){
+                    getInput();
+                    return true;
                 }
                 else
                 {
-                    //add / to file
-                    rToken.setString("/");
-                    rToken.setCol(stringColCounter);
-                    rToken.setLine(stringLineCounter);
-                    rToken.setType(4);//operator
-                    //advance
+                    error("not matching {} in line"+token.getLine()+"an col"+token.getCol());
+                    return true;
                 }
-                break;
-                
-                
-                //**********************************  changed get input in parser  !*******************************************************
-                private static void getInput()
-    {
-        token = MyScanner.advance();
-        input = token.getString();
-        while(input == "//")
-        {
-            token = MyScanner.advance();
-            input = token.getString();
+            }
+            else
+            {
+                error("lost { in line"+token.getLine()+"an col"+token.getCol());
+                while(!isFollow("ClassDecl",input))
+                {
+                    getInput();
+                }
+                return true;
+            }
         }
-    }  
-                
+        else
+        {
+            error("enter identifier in line" + token.getLine() + " and col" + token.getCol());
+            while(!isFollow("ClassDecl",input))
+            {
+                getInput();
+            }
+            return true;
+        }
+    }
