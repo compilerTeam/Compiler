@@ -389,3 +389,188 @@ private static boolean Addop()
         return true;
 
     }
+    //////////////new
+    public static boolean CondTerm()
+    {//checked
+        if(CondFact()){
+            while(input.equals("&&")) {
+                getInput();
+                if(CondFact())
+                    continue;
+                else{
+                    error("some fact is missing in condition line" + token.getLine() + "and col" + token.getCol());
+                    while(!isFollow("CondTerm",input)&& !input.equals("eof")){
+                        getInput();
+                    }
+                    return true;
+                }
+            }
+            return true;
+        }
+        error("there must be a condition fact here in line" + token.getLine() + "and col" + token.getCol());
+        while(!isFollow("Condition",input)&&!input.equals("eof")){
+            getInput();
+        }
+        return true;
+
+    }
+    
+    ////////////new
+    private static boolean CondFact()
+    {
+        if(input.equals("-") ||input.equals("identifier")||input.equals("Terminal")
+                || input.equals("number") ||input.equals("new") || input.equals("("))//first(exp)
+        {
+            if(Expression())
+            {
+                if(Relop())
+                {
+                    if(input.equals("-") ||input.equals("identifier")||input.equals("Terminal")
+                            || input.equals("number") ||input.equals("new") || input.equals("("))//first(exp)
+                    {
+                        if(Expression())
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            error("wrong 2'nd exp in condition!");
+                            while(!isFollow("CondFact",input)&&!input.equals("eof")){
+                                getInput();
+                            }
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        error("missing 2'nd conditional exp!");
+                        while(!isFollow("CondFact",input)&&!input.equals("eof")){
+                            getInput();
+                        }
+                        return true;
+                    }
+                }
+                else{
+                    error("missing relop here ");
+                    while(!isFollow("CondFact",input)&&!input.equals("eof")) {
+                        getInput();
+                    }
+                    return true;
+                }
+
+            }
+            else
+            {
+                error("wrong 1'st exp in condition!");
+                while(!isFollow("CondFact",input)&&!input.equals("eof")){
+
+                }
+                return true;
+            }
+        }
+        else
+        {
+            error("missing conditional expression!");
+            while(!isFollow("CondFact",input)&&!input.equals("eof")){
+                getInput();
+            }
+            return true;
+        }
+        //return true;
+    }
+    
+    //////////////new
+    private static boolean Condition()
+    {
+        if(input.equals("-") ||input.equals("identifier")||input.equals("Terminal")
+                || input.equals("number") ||input.equals("new") || input.equals("("))//first(CondTerm)
+        {
+            if(CondTerm())
+            {
+                if(input.equals("||"))//||
+                {
+                    getInput();
+                    if(input.equals("-") ||input.equals("identifier")||input.equals("Terminal")
+                            || input.equals("number") ||input.equals("new") || input.equals("("))//first(CondTerm)
+                    {
+                        while(CondTerm())
+                        {
+                            if(input.equals("||"))
+                            {
+                                getInput();
+                                if(input.equals("-") ||input.equals("identifier")||input.equals("Terminal")
+                                        || input.equals("number") ||input.equals("new") || input.equals("("))//first(CondTerm)
+                                {
+                                    continue;
+                                }
+                                else
+                                {
+                                    error("no CondTerm after || here!");
+                                    while(!isFollow("Condition",input)&&!input.equals("eof")) {
+                                        getInput();
+                                    }
+                                    return true;
+                                }
+                            }
+                            else if(input.equals(")"))//follow(Condition)
+                            {
+                                return true;
+                            }
+                            else
+                            {
+                                error("wrong conditon!/no condterm");
+                                while(!isFollow("Condition",input)&&!input.equals("eof")) {
+                                    getInput();
+                                }
+                                return true;
+
+                            }
+                        }
+
+                        error("wrong condterm");
+                        while(!isFollow("Condition",input)&&!input.equals("eof")) {
+                            getInput();
+                        }
+                        return true;
+
+                    }
+                    else
+                    {
+                        error("no CondTerm after ||!");
+                        while(!isFollow("Condition",input)&&!input.equals("eof")) {
+                            getInput();
+                        }
+                        return true;
+                    }
+                }
+                else if(input.equals(")"))//follow(Condition)
+                {
+                    return true;
+                }
+                else
+                {
+                    error("wrong condterm here!");
+                    while(!isFollow("Condition",input)&&!input.equals("eof")) {
+                        getInput();
+                    }
+                    return true;
+                }
+            }
+            else
+            {
+                error("wrong condterm here!");
+                while(!isFollow("Condition",input)&&!input.equals("eof")) {
+                    getInput();
+                }
+                return true;
+            }
+        }
+        else
+        {
+            error("wrong Condition/no CondTerm");
+            while(!isFollow("Condition",input)&&!input.equals("eof")) {
+                getInput();
+            }
+            return true;
+        }
+    }
