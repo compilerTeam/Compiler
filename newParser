@@ -439,35 +439,64 @@ public class MyParser
                             }
                             else{
                                 System.out.println("missing ; in line "+token.getLine()+ "and col "+token.getCol());
+
+                                while(!isFollow("ConstDecl",input)||token.equals("eof")){
+
+                                    getInput();
+                                }
                                 return false;
                             }
                         }
                         else{
                             System.out.println("initialize via char or integer. error on line"+token.getLine()+"and col"+token.getCol());
+
+                            while(!isFollow("ConstDecl",input)||token.equals("eof")){
+
+                                getInput();
+                            }
                             return false;
                         }
 
                     }
                     else{
                         System.out.println("initialize needs'=' symbol. error on line"+token.getLine()+"and col"+token.getCol());
+
+                        while(!isFollow("ConstDecl",input)||token.equals("eof")){
+
+                            getInput();
+                        }
                         return false;
                     }
 
                 }
                 else{
                     System.out.println("enter identifier after type. error on line"+token.getLine()+"and col"+token.getCol());
+
+                    while(!isFollow("ConstDecl",input)||token.equals("eof")){
+
+                        getInput();
+                    }
                     return false;
                 }
 
             }
             else{
                 System.out.println("enter type at first. error on line"+token.getLine()+"and col"+token.getCol());
+
+                while(!isFollow("ConstDecl",input)||token.equals("eof")){
+
+                    getInput();
+                }
+
                 return false;
             }
 
         }
         else{
             System.out.println("declare final const. error on line" + token.getLine() + "and col" + token.getCol());
+            while(!isFollow("ConstDecl",input)||token.equals("eof")){
+                getInput();
+            }
             return false;
         }
 
