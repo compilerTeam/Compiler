@@ -1,0 +1,44 @@
+   //new
+    private static boolean ActPars()
+    {//checked
+        boolean result=false;
+        if(Expression()){
+            result=true;
+            if(input.equals(","))
+            {
+                result=false;
+                while(input.equals(","))
+                {
+                    getInput();
+                    if(Expression())
+                    {
+                        result=true;
+                    }
+                    else{
+                        result=true;
+                        error("expression expected in line"+token.getLine()+ "and col"+token.getCol());
+                        while(!(isFollow("ActPars",input)) && !(input.equals("eof")))
+                        {
+                            getInput();
+                        }
+                        break;
+                    }
+                }
+                return result;
+            }
+            else
+            {
+                return result;
+            }
+        }
+        else
+        {
+            error("expression expected in line"+token.getLine()+ "and col"+token.getCol());
+            while(!(isFollow("ActPars",input)) && !(input.equals("eof")))
+            {
+                getInput();
+            }
+            result=true;
+        }
+        return result;
+    }
