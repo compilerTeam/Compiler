@@ -351,3 +351,41 @@ private static boolean Addop()
             return true;
         }
     }
+
+/////////////////new
+
+private static boolean Addop()
+    {
+        if(input.equals("+"))
+        {
+            getInput();
+            return true;
+        }
+        else if(input.equals("-"))
+        {
+            getInput();
+            return true;
+        }
+        else
+        {
+            error("not true operation!");
+            while(!isFollow("Addop",input) && !input.equals("eof")){
+                getInput();
+            }
+            return true;
+        }
+    }
+    //////////////////////////new
+    public static boolean Mulop()
+    {
+        if(input.equals("*")||input.equals("/")||input.equals("%")){
+            getInput();
+            return true;
+        }
+        error("not true operator...");
+        while(!isFollow("Mulop",input) && !input.equals("eof")){
+            getInput();
+        }
+        return true;
+
+    }
