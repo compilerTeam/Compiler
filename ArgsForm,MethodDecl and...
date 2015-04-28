@@ -1215,3 +1215,85 @@ private static boolean Addop()
         }
         return true;
     }
+//////////////////////////Designator//////
+ private static boolean Designator()
+    {//checked
+        boolean result = true;
+        if(input.equals("identifier"))
+        {
+            getInput();
+            while(input.equals(".") || input.equals("["))
+            {
+                if(input.equals("."))
+                {
+                    getInput();
+                    if(input.equals("identifier"))
+                    {
+                        getInput();
+                    }
+                    else
+                    {
+                        error("missing id after . in col :"+ token.getCol() +"in line : " + token.getLine());
+                        while(!isFollow("Designator",input) && !input.equals("eof"))
+                        {
+                            getInput();
+                        }
+                        result = true;
+                    }
+                }
+                else if(input.equals("["))
+                {
+                    getInput();
+                    if(input.equals("-") ||input.equals("identifier")||input.equals("Terminal")
+                            || input.equals("number") ||input.equals("new") || input.equals("("))//first(exp)
+                    {
+                        if(Expression())
+                        {
+                            if(input.equals("]"))
+                            {
+                                getInput();
+                            }
+                            else
+                            {
+                                error("] baste ja munde!in col: " + token.getCol() + "in col" + token.getLine());
+                                while(!isFollow("Designator",input) && !input.equals("eof"))
+                                {
+                                    getInput();
+                                }
+                                result = true;
+                            }
+                        }
+                        else
+                        {
+                            System.out.println("wrong exp on designator in line:" + token.getLine() + "in col "+ token.getCol());
+                            while(!isFollow("Designator",input) && !input.equals("eof"))
+                            {
+                                getInput();
+                            }
+                            result = true;
+                        }
+                    }
+                    else
+                    {
+                        System.out.println("first exp was expected in line: "+token.getLine()+"in col: "+token.getCol());
+                        while(!isFollow("Designator",input) && !input.equals("eof"))
+                        {
+                            getInput();
+                        }
+                        result = true;
+                    }
+                }
+                else
+                {
+
+                    System.out.println("wrong designator form no [ no . !! in line: "+token.getLine()+"in col "+token.getCol());
+                    while(!isFollow("Designator",input) && !input.equals("eof"))
+                    {
+                        getInput();
+                    }
+                    result = true;
+                }
+            }
+        }
+        return  result;
+    }  //not checked ep
