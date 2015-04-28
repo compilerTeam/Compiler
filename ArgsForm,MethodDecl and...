@@ -1,0 +1,288 @@
+private static boolean ArgsForm()
+    {//checked
+        if(input.equals("char") || input.equals("int") || input.equals("float"))//first(Type)
+        {
+            boolean onLoop = false;
+            do
+            {
+                if(Type())
+                {
+                    if(input.equals("identifier"))
+                    {
+                        getInput();
+                        if(input.equals(","))
+                        {
+                            getInput();
+                            if(input.equals("char") || input.equals("int") || input.equals("float"))//first(Type)
+                            {
+                                onLoop = true;
+                            }
+                            else
+                            {
+                                onLoop = false;
+                                error("enter type and identifier after , please. error on line "+token.getLine()+" and col "+ token.getCol());
+                                while(!isFollow("ArgsForm",input)&& !input.equals("eof")) {
+                                    getInput();
+                                    System.out.println(input);
+
+                                }
+                                return false;
+                            }
+                        }
+                        else
+                        {
+                            onLoop = false;
+                        }
+                    }
+                    else{
+                        onLoop=false;
+                        error("enter identifier after type please. error on line "+token.getLine()+" and col "+ token.getCol());
+                        while(!isFollow("ArgsForm",input)&& !input.equals("eof")) {
+                            getInput();
+                            System.out.println(input);
+
+                        }
+                        return true;
+                    }
+                }
+                else{  //home sweet home
+                    onLoop=false;
+                    error("type says error. error on line "+token.getLine()+" and col "+ token.getCol());
+                    while(!isFollow("ArgsForm",input)&& !input.equals("eof")) {
+                        getInput();
+                        System.out.println(input);
+
+                    }
+                    return true;
+                }
+
+            }while(onLoop);
+            if(input.equals(")"))//follow(ArgsForm)
+            {
+                return true;
+            }
+            else
+            {
+                System.out.println("missing ) after argomans in  " + "line " + token.getLine() + "col" + token.getCol());
+                return true;
+            }
+        }
+        else
+        {
+            System.out.println("enter Type of ur identifier!"+" in col "+token.getCol() + " in line" + token.getLine());
+            return true;
+        }
+    }
+    
+    //////
+    
+    private static boolean MethodDecl()
+    {
+        getInput();
+        if(input.equals("void"))
+        {
+            getInput();
+            if(input.equals("identifier"))
+            {
+                getInput();
+                if(input.equals("("))
+                {
+                    getInput();
+                    if(input.equals(")")){
+                        getInput();
+                        return Block();
+                    }
+                    else if(input.equals("char") || input.equals("int") || input.equals("float"))
+                    {
+                        if(ArgsForm())
+                        {
+                            if(input.equals(")"))
+                            {
+                                getInput();
+                                if(input.equals("{"))
+                                    return Block();
+                                else{
+                                    error("missing { . error in line "+token.getLine()+" and col "+token.getCol());
+                                    while(!isFollow("MethodDecl",input)||!input.equals("eof")) {
+                                        getInput();
+
+                                    }
+                                    return false;
+                                }
+                            }
+                            else
+                            {
+                                error("missing ) 2; error in line "+token.getLine()+" and col "+token.getCol());
+                                while(!isFollow("MethodDecl",input)||!input.equals("eof")) {
+                                    getInput();
+
+                                }
+                                return false;
+                            }
+                        }
+                        else{
+                            error("ArgsForm says error in line "+token.getLine()+" and col "+token.getCol());
+                            while(!isFollow("MethodDecl",input)||!input.equals("eof")) {
+                                getInput();
+
+                            }
+                            return false;
+                        }
+                    }
+                    else{
+                        error("ArgsForm expected here in line " + token.getLine() + " and col " + token.getCol());
+                        while(!isFollow("MethodDecl",input)||!input.equals("eof")) {
+                            getInput();
+
+                        }
+                        return false;
+                    }
+                }
+                else{
+                    error("missing ( 2; error in line "+token.getLine()+" and col "+token.getCol());
+                    while(!isFollow("MethodDecl",input)||!input.equals("eof")) {
+                        getInput();
+
+                    }
+                    return false;
+                }
+            }
+            else{
+                error("missing identifier; error in line "+token.getLine()+" and col "+token.getCol());
+                while(!isFollow("MethodDecl",input)||!input.equals("eof")) {
+                    getInput();
+
+                }
+                return false;
+            }
+        }
+        else if(input.equals("char") || input.equals("int") || input.equals("float"))
+        {
+            if(Type())
+            {
+                if(input.equals("identifier"))
+                {
+                    getInput();
+                    if(input.equals("("))
+                    {
+                        getInput();
+                        if(input.equals(")"))
+                        {   //o arg!
+                            getInput();
+                            return Block();
+                        }
+                        else if(input.equals("char") || input.equals("int") || input.equals("float"))
+                        {
+                            if(ArgsForm())
+                            {
+                                if(input.equals(")"))
+                                {
+                                    getInput();
+                                    return Block();
+                                }
+                                else
+                                {
+                                    error("missing ) 2; error in line " + token.getLine() + " and col " + token.getCol());
+                                    while(!isFollow("MethodDecl",input)||!input.equals("eof")) {
+                                        getInput();
+
+                                    }
+                                    return false;
+                                }
+                            }
+                            else{
+                                error("ArgsForm expected here in line "+token.getLine()+" and col "+ token.getCol());
+                                while(!isFollow("MethodDecl",input)||!input.equals("eof")) {
+                                    getInput();
+
+                                }
+                                return false;
+                            }
+                        }
+                    }
+                    else{
+                        error("missing ( 2; error in line " + token.getLine() + " and col " + token.getCol());
+                        while(!isFollow("MethodDecl",input)||!input.equals("eof")) {
+                            getInput();
+
+                        }
+                        return false;
+                    }
+                }
+                error("missing identifier; error in line "+token.getLine()+" and col "+token.getCol());
+                while(!isFollow("MethodDecl",input)||!input.equals("eof")) {
+                    getInput();
+
+                }
+                return false;
+            }
+        }
+        else
+        {
+            error("error on MethodDecl, return type is not mentioned. use void or Type. error on line "+token.getLine()+" and col "+token.getCol());
+            if(input.equals("identifier"))
+            {
+                getInput();
+                if(input.equals("("))
+                {
+                    getInput();
+                    if(input.equals(")"))
+                    {   //o arg!
+                        getInput();
+                        return Block();
+                    }
+                    else if(input.equals("char") || input.equals("int") || input.equals("float"))
+                    {
+                        if(ArgsForm())
+                        {
+                            if(input.equals(")"))
+                            {
+                                getInput();
+                                return Block();
+                            }else
+                            {
+                                error("missing ) 2; error in line " + token.getLine() + " and col " + token.getCol());
+                                while(!isFollow("MethodDecl",input)||!input.equals("eof")) {
+                                    getInput();
+
+                                }
+                                return false;
+                            }
+                        }
+                        else{
+                            error("ArgsForm expected here in line "+token.getLine()+" and col "+ token.getCol());
+                            while(!isFollow("MethodDecl",input)||!input.equals("eof")) {
+                                getInput();
+
+                            }
+                            return false;
+                        }
+                    }
+                    else{
+                        error("ArgsForm expected here in line "+token.getLine()+" and col "+ token.getCol());
+                        while(!isFollow("MethodDecl",input)||!input.equals("eof")) {
+                            getInput();
+
+                        }
+                        return false;
+                    }
+                }
+                else{
+                    error("missing identifier; error in line " + token.getLine() + " and col " + token.getCol());
+                    while(!isFollow("MethodDecl",input)||!input.equals("eof")) {
+                        getInput();
+
+                    }
+                    return false;
+                }
+            }
+            error("missing identifier; error in line "+token.getLine()+" and col "+token.getCol());
+            while(!isFollow("MethodDecl",input)||!input.equals("eof")) {
+                getInput();
+
+            }
+            return false;
+        }
+        System.out.println("error on MethodDecl2");
+        return false;
+    }
