@@ -74,7 +74,7 @@ private static boolean ArgsForm()
         }
     }
     
-    //////
+    /////////new
     
     private static boolean MethodDecl()
     {
@@ -285,4 +285,45 @@ private static boolean ArgsForm()
         }
         System.out.println("error on MethodDecl2");
         return false;
+    }
+//////////////////////new
+
+private static boolean Block()
+    {  //dunno if its right or anything...:|
+        //checked
+        boolean result=true;
+        if(input.equals("{")){
+            getInput();
+            while(input.equals("while") ||input.equals("break")||input.equals("return")
+                    || input.equals(";") ||input.equals("print") || input.equals("read")
+                    || input.equals("{") || input.equals("if") || input.equals("identifier")){
+
+                if(Statement()){
+                    result=true;
+                }
+                else{
+                    error("statement reported wrong answer here");
+
+                    result=false;
+                    break;
+                }
+
+            }
+            if(result==true&&input.equals("}")){
+                getInput();
+                return true;
+            }
+            else{
+                error("some } missing in line "+token.getLine()+"and col "+token.getCol());
+                while(!isFollow("Block",input)&&!input.equals("eof")){
+                    getInput();
+                }
+                return true;
+            }
+        }
+        error("expected { in line  "+token.getLine()+"and col "+token.getCol());
+        while(!isFollow("Block",input)&&!input.equals("eof")){
+            getInput();
+        }
+        return true;
     }
