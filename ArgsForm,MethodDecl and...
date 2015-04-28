@@ -327,3 +327,27 @@ private static boolean Block()
         }
         return true;
     }
+
+//////////new
+
+private static boolean Addop()
+    {
+        if(input.equals("+"))
+        {
+            getInput();
+            return true;
+        }
+        else if(input.equals("-"))
+        {
+            getInput();
+            return true;
+        }
+        else
+        {
+            error("not true operation!");
+            while(!isFollow("Addop",input) && !input.equals("eof")){
+                getInput();
+            }
+            return true;
+        }
+    }
