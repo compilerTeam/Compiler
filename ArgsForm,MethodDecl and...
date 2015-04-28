@@ -1297,3 +1297,160 @@ private static boolean Addop()
         }
         return  result;
     }  //not checked ep
+//////////////////////////////////////new
+private static boolean Expression()
+    {
+        if(input.equals("-"))
+        {
+            getInput();
+            if(input.equals("identifier")||input.equals("Terminal") || input.equals("number") ||input.equals("new") || input.equals("("))
+            {
+                if(Term())
+                {
+
+                    if(input.equals("+") || input.equals("-")) //AddOp!
+                    {
+                        while(Addop())
+                        {
+                            if(input.equals("identifier")||input.equals("Terminal") || input.equals("number") ||input.equals("new") || input.equals("("))
+                            {
+                                if(Term())
+                                {
+                                    if(input.equals("+") || input.equals("-"))
+                                    {
+                                        continue;
+                                    }
+                                    else if(input.equals(";") || input.equals(",") || input.equals("==") ||
+                                            input.equals("!=")||input.equals("<")||input.equals("<=")||input.equals(">")||input.equals(">=") || input.equals("]"))//follow(Expression)
+                                    {
+                                        return true;
+                                    }
+                                    else
+                                    {
+                                        error("wrong exp5" + token.getCol() + "in line " + token.getLine());
+                                        while(!isFollow("Expression",input)&&!input.equals("eof"))   {
+                                            getInput();
+                                        }
+                                        return true;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                System.out.println("missing term!"+"in col "+token.getCol() + "in line "+ token.getLine());
+                                return false;
+                            }
+                        }
+                        error("addop omiitted here! fix it please!") ;
+                        while(!isFollow("Expression",input)&&!input.equals("eof"))   {
+                            getInput();
+                        }
+                        return true;
+                    }
+                    else
+                    {
+                        return true;
+                    }
+                }
+                else
+                {
+                    error("wrong Term in expression!");
+                    while(!isFollow("Expression",input)&&!input.equals("eof"))   {
+                        getInput();
+                    }
+                    return false;
+                }
+            }
+            else
+            {
+                error("no term in expression"+"in col"+ token.getCol() + "in line "+ token.getLine());
+                while(!isFollow("Expression",input)&&!input.equals("eof"))   {
+                    getInput();
+                }
+                return true;
+            }
+        }
+        else //[-]term na! khode term!
+        {
+
+            if(input.equals("identifier")||input.equals("Terminal") || input.equals("number") ||input.equals("new") || input.equals("("))
+            {
+                if(Term())
+                {
+                    if(input.equals("+") || input.equals("-")) //AddOp!
+                    {
+                        while(Addop())
+                        {
+                            if(input.equals("identifier")||input.equals("Terminal") || input.equals("number") ||input.equals("new") || input.equals("("))
+                            {
+                                if(Term())
+                                {
+                                    if(input.equals("+") || input.equals("-"))
+                                    {
+                                        continue;
+                                    }
+                                    else if(input.equals(";") || input.equals(",") || input.equals("==") ||
+                                            input.equals("!=")||input.equals("<")||input.equals("<=")||input.equals(">")||input.equals(">=") || input.equals("]"))//follow(Expression)
+                                    {
+                                        return true;
+                                    }
+                                    else
+                                    {
+                                        error("err on exp" + input);
+                                        error("wrong exp4" + token.getCol() + "in line " + token.getLine());
+                                        while(!isFollow("Expression",input)&&!input.equals("eof"))   {
+                                            getInput();
+                                        }
+                                        return true;
+                                    }
+                                }
+                                else{
+                                    error("term resurns wrong answer here!");
+                                    while(!isFollow("Expression",input)&&!input.equals("eof"))   {
+                                        getInput();
+                                    }
+                                    return true;
+                                }
+                            }
+                            else
+                            {
+                                error("missing term! in line "+ token.getLine()+" and col "+token.getCol());
+                                while(!isFollow("Expression",input)&&!input.equals("eof"))   {
+                                    getInput();
+                                }
+                                return true;
+                            }
+                        }
+                        error("addop was omitted, fix in soon!");
+                        while(!isFollow("Expression",input)&&!input.equals("eof"))   {
+                            getInput();
+                        }
+                        return true;
+                    }
+                    else
+                    {
+                        return true;
+                    }
+                }
+                else
+                {
+                    error("wrong Term in expression !");
+                    while(!isFollow("Expression",input)&&!input.equals("eof"))   {
+                        getInput();
+                    }
+                    return true;
+                }
+            }
+            else
+            {
+
+                error("no term in expression"+"in col"+ token.getCol() + "in line "+ token.getLine());
+                while(!isFollow("Expression",input)&&!input.equals("eof"))   {
+                    getInput();
+                }
+                return true;
+            }
+        }
+
+
+    }
