@@ -1,44 +1,37 @@
     private static boolean ClassDecl()
     {
+    getInput();
+    if(input.equals("identifier")){
         getInput();
-        if(input.equals("identifier")){
+        if(input.equals("{")){
             getInput();
-            if(input.equals("{")){
-                getInput();
-                if(input.equals("int") || input.equals("float") || input.equals("char"))//first(VarDecl)
-                {
-                    while(VarDecl()){}
+            if(input.equals("int") || input.equals("float") || input.equals("char"))//first(VarDecl)
+            {
+                while(VarDecl()){
+                    if(!(input.equals("int") || input.equals("float") || input.equals("char")))
+                        break;
                 }
-                else//ta akhare class bekhun rad kon!!
+            }
+            else//ta akhare class bekhun rad kon!!
+            {
+                while(!input.equals("}") && !isFollow("ClassDecl",input))//ya follow(class)
                 {
-                    while(!input.equals("}") && !isFollow("ClassDecl",input))//ya follow(class)
-                    {
-                        getInput();
-                    }
-                }
-                if(input.equals("}")){
                     getInput();
-                    return true;
                 }
-                else
-                {
-                    error("not matching {} in line"+token.getLine()+"an col"+token.getCol());
-                    return true;
-                }
+            }
+            if(input.equals("}")){
+                getInput();
+                return true;
             }
             else
             {
-                error("lost { in line"+token.getLine()+"an col"+token.getCol());
-                while(!isFollow("ClassDecl",input))
-                {
-                    getInput();
-                }
+                error("not matching {} in line"+token.getLine()+"an col"+token.getCol());
                 return true;
             }
         }
         else
         {
-            error("enter identifier in line" + token.getLine() + " and col" + token.getCol());
+            error("lost { in line"+token.getLine()+"an col"+token.getCol());
             while(!isFollow("ClassDecl",input))
             {
                 getInput();
@@ -46,3 +39,13 @@
             return true;
         }
     }
+    else
+    {
+        error("enter identifier in line" + token.getLine() + " and col" + token.getCol());
+        while(!isFollow("ClassDecl",input))
+        {
+            getInput();
+        }
+        return true;
+    }
+}
