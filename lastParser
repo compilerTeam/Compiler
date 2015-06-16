@@ -1,0 +1,2140 @@
+package com.company;
+public class MyParser
+{
+    private static String input ;
+    private static Token token;
+
+    public static boolean isFollow(String nonTerminal,String tml)
+    {
+        if(nonTerminal.equals("ConstDecl"))
+        {
+            if(tml.equals("eof") || tml.equals("int") || tml.equals("char") || tml.equals("float") || tml.equals("final") ||tml.equals("class")
+                    ||tml.equals("function"))
+            {
+                return true;
+            }
+            return false;
+        }
+        if(nonTerminal.equals("VarDecl"))
+        {
+            if(tml.equals("}") || tml.equals("eof") || tml.equals("int") || tml.equals("char") || tml.equals("float") || tml.equals("final") ||tml.equals("class")
+                    ||tml.equals("function"))
+            {
+                return true;
+            }
+            return false;
+        }
+        if(nonTerminal.equals("MethodDecl"))
+        {
+            if(tml.equals("eof") || tml.equals("int") || tml.equals("char") || tml.equals("float") || tml.equals("final") ||tml.equals("class")
+                    ||tml.equals("function"))
+            {
+                return true;
+            }
+            return false;
+        }
+        if(nonTerminal.equals("ArgsForm"))
+        {
+            if(tml.equals(")"))
+            {
+                return true;
+            }
+            return false;
+        }
+        if(nonTerminal.equals("Type"))
+        {
+            if(tml.equals("identifier"))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        if(nonTerminal.equals("Block"))
+        {
+            if(tml.equals("}") || tml.equals("else") ||tml.equals("eof") || tml.equals("int")
+                    || tml.equals("char") || tml.equals("float") || tml.equals("final") ||tml.equals("class")
+                    ||tml.equals("function"))
+            {
+                return true;
+            }
+            return false;
+        }
+        if(nonTerminal.equals("Statement"))
+        {
+            if(tml.equals("}") || tml.equals("else"))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        if(nonTerminal.equals("ActPars"))
+        {
+            if(tml.equals(")"))
+            {
+                return true;
+            }
+            return false;
+        }
+        if(nonTerminal.equals("Condition"))
+        {
+            if(tml.equals(")"))
+            {
+                return true;
+            }
+            return false;
+        }
+        if(nonTerminal.equals("CondTerm"))
+        {
+            if(tml.equals("||") || tml.equals(")"))
+            {
+                return true;
+            }
+            return false;
+        }
+        if(nonTerminal.equals("CondFact")|| tml.equals(")"))
+        {
+            if(tml.equals("&&") || tml.equals("||"))
+            {
+                return true;
+            }
+            return false;
+        }
+        if(nonTerminal.equals("Relop"))
+        {
+            if(tml.equals("-") ||tml.equals("identifier")||tml.equals("Terminal")
+                    || tml.equals("number") ||tml.equals("new") || tml.equals("("))
+            {
+                return true;
+            }
+            return false;
+        }
+        if(nonTerminal.equals("Term"))
+        {
+            if(tml.equals("!=") || tml.equals("==") ||tml.equals("]") || tml.equals("++") ||tml.equals("--")
+                    ||tml.equals(",") ||tml.equals(";") || tml.equals("&&") ||tml.equals("||") || tml.equals(")")
+                    || tml.equals(">=") || tml.equals("<=") || tml.equals("==") ||tml.equals("=")
+                    || tml.equals("<") || tml.equals(">"))//follow (Term)
+            {
+                return true;
+            }
+            return false;
+        }
+        if(nonTerminal.equals("Factor"))
+        {
+            if(tml.equals("*") ||tml.equals("%") || tml.equals("/") || tml.equals("!=") || tml.equals("==") ||tml.equals("]") || tml.equals("++") ||tml.equals("--")
+                    ||tml.equals(",") ||tml.equals(";") || tml.equals("&&") ||tml.equals("||") || tml.equals(")")
+                    || tml.equals(">=") || tml.equals("<=") || tml.equals("==") ||tml.equals("=")
+                    || tml.equals("<") || tml.equals(">") )//follow(Factor)
+            {
+                return true;
+            }
+            return false;
+        }
+        if(nonTerminal.equals("Designator"))
+        {
+            if(tml.equals(")")||tml.equals("(")||tml.equals("++")||tml.equals("--"))
+            {
+                return true;
+            }
+            return false;
+        }
+        if(nonTerminal.equals("Addop"))
+        {
+            if(tml.equals("identifier")||tml.equals("Terminal")
+                    || tml.equals("number") ||tml.equals("new") || tml.equals("(")) //first(Term)
+            {
+                return true;
+            }
+            return false;
+        }
+        if(nonTerminal.equals("Mulop"))
+        {
+            if(tml.equals("identifier")||tml.equals("Terminal")
+                    || tml.equals("number") ||tml.equals("new") || tml.equals("("))
+            {
+                return true;
+            }
+            return false;
+        }
+        if(nonTerminal.equals("ClassDecl"))
+        {
+            if(tml.equals("eof") || tml.equals("int") || tml.equals("char") || tml.equals("float") || tml.equals("final") ||tml.equals("class")
+                    ||tml.equals("function"))
+            {
+                return true;
+            }
+            return false;
+        }
+        if(nonTerminal.equals("Expression"))
+        {
+            if(tml.equals("]") || tml.equals(";") || tml.equals("++") || tml.equals("--") || tml.equals(")") ||tml.equals(",")
+                    ||tml.equals("<")||tml.equals("<=")||tml.equals("==")||tml.equals("=>")||tml.equals(">")||tml.equals("!=")
+                    ||tml.equals("&&")||tml.equals("||"))
+            {
+                return true;
+            }
+        }
+        return false; //nonTerminal was incorrect
+    }
+    public static void parse()
+    {
+        getInput();
+        if(program() && input.equals("eof") )
+            System.out.print("accept!");
+        else
+            System.out.print("error!!");
+    }    //ended
+    public static void error(String str)
+    {
+        System.err.println(str);
+
+    }    //ended
+    public static boolean program()
+    {
+        boolean r = true;
+        while(!input.equals("eof"))
+        {
+
+            if(input.equals("final"))
+            {
+                r &= ConstDecl();
+            }
+            if(input.equals("char") || input.equals("int") || input.equals("float"))
+            {
+                r &= VarDecl();
+            }
+            if(input.equals("class"))
+            {
+                r &=  ClassDecl();
+            }
+            if(input.equals("function"))
+            {
+                r &=  MethodDecl();
+            }
+            else
+            {
+                error("there is an extra"+ input + "in line: "+token.getLine() + "in col: "+token.getCol());
+                getInput();
+                continue;
+            }
+        }
+        System.out.println("the out put of program is:" + r);
+        return r;
+    }      //ended
+    private static void getInput()
+    {
+        token = MyScanner.advance();
+        input = token.getString();
+        while(input == "//")
+        {
+            token = MyScanner.advance();
+            input = token.getString();
+        }
+    }
+    private static boolean VarDecl()
+    {
+        if(input.equals("int") || input.equals("float") || input.equals("char"))//first(Type)
+        {
+            if(Type())
+            {
+                if(input.equals("identifier"))
+                {
+                    getInput();
+                    while((!input.equals(";")))
+                    {
+                        if(input .equals(","))
+                        {
+                            getInput();
+                            if(input.equals("identifier"))
+                            {
+                                getInput();
+                                continue;
+                            }
+                            else
+                            {
+                                error("needed identifier in line "+token.getLine()+"and col "+token.getCol());
+                                while(!isFollow("VarDecl",input))
+                                {
+                                    getInput();
+                                }
+                                return true;   //id ,,
+                            }
+                        }
+                        else
+                        {
+                            while(!isFollow("VarDecl",input))
+                            {
+                                getInput();
+                            }
+                            error("missing , or ; in line "+token.getLine() + " in col " +token.getCol());
+                            return true;  //id!
+                        }
+                    }
+                    getInput();
+                    return true;
+                }
+                else
+                {
+                    error("needed identifier in line "+token.getLine()+"and col "+token.getCol());
+                    while(!isFollow("VarDecl",input))
+                    {
+                        getInput();
+                    }
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        else
+        {
+            error("no Type in VarDecl in line "+token.getLine() + "in col" + token.getCol());
+            return true;
+        }
+    } //checked //error production completed
+    private static boolean MethodDecl()
+    {
+        getInput();
+        if(input.equals("void"))
+        {
+            getInput();
+            if(input.equals("identifier"))
+            {
+                getInput();
+                if(input.equals("("))
+                {
+                    getInput();
+                    if(input.equals(")")){
+                        getInput();
+
+                        return Block();
+                    }
+                    else if(input.equals("char") || input.equals("int") || input.equals("float"))
+                    {
+                        if(ArgsForm())
+                        {
+                            if(input.equals(")"))
+                            {
+                                getInput();
+                                if(input.equals("{"))
+                                    return Block();
+                                else{
+                                    error("missing { . error in line "+token.getLine()+" and col "+token.getCol());
+                                    while(!isFollow("MethodDecl",input)&&!input.equals("eof")) {
+                                        getInput();
+
+                                    }
+                                    return true;
+                                }
+                            }
+                            else
+                            {
+                                error("missing ) 2; error in line "+token.getLine()+" and col "+token.getCol());
+                                while(!isFollow("MethodDecl",input)&&!input.equals("eof")) {
+                                    getInput();
+
+                                }
+                                return true;
+                            }
+                        }
+                        else{
+                            error("ArgsForm says error in line "+token.getLine()+" and col "+token.getCol());
+                            while(!isFollow("MethodDecl",input)&&!input.equals("eof")) {
+                                getInput();
+
+                            }
+                            return true;
+                        }
+                    }
+                    else{
+                        error("ArgsForm expected here in line " + token.getLine() + " and col " + token.getCol());
+                        while(!isFollow("MethodDecl",input)&&!input.equals("eof")) {
+                            getInput();
+
+                        }
+                        return true;
+                    }
+                }
+                else{
+                    error("missing ( 2; error in line "+token.getLine()+" and col "+token.getCol());
+                    while(!isFollow("MethodDecl",input)&&!input.equals("eof")) {
+                        getInput();
+
+                    }
+                    return true;
+                }
+            }
+            else
+            {
+                error("missing identifier1; error in line "+token.getLine()+" and col "+token.getCol());
+                while(!isFollow("MethodDecl",input)&&!input.equals("eof")) {
+                    getInput();
+
+                }
+                return true;
+            }
+        }
+        else if(input.equals("char") || input.equals("int") || input.equals("float"))
+        {
+            if(Type())
+            {
+                if(input.equals("identifier"))
+                {
+                    getInput();
+                    if(input.equals("("))
+                    {
+                        getInput();
+                        if(input.equals(")"))
+                        {   //o arg!
+                            getInput();
+                            return Block();
+                        }
+                        else if(input.equals("char") || input.equals("int") || input.equals("float"))
+                        {
+                            if(ArgsForm())
+                            {
+                                if(input.equals(")"))
+                                {
+                                    getInput();
+                                    return Block();
+                                }
+                                else
+                                {
+                                    error("missing ) 2; error in line " + token.getLine() + " and col " + token.getCol());
+                                    while(!isFollow("MethodDecl",input)&&!input.equals("eof")) {
+                                        getInput();
+
+                                    }
+                                    return true;
+                                }
+                            }
+                            else{
+                                error("ArgsForm expected here in line "+token.getLine()+" and col "+ token.getCol());
+                                while(!isFollow("MethodDecl",input)&&!input.equals("eof")) {
+                                    getInput();
+
+                                }
+                                return true;
+                            }
+                        }
+                    }
+                    else{
+                        error("missing ( 2; error in line " + token.getLine() + " and col " + token.getCol());
+                        while(!isFollow("MethodDecl",input)&&!input.equals("eof")) {
+                            getInput();
+
+                        }
+                        return true;
+                    }
+                }
+                else
+                {
+                    error("missing identifier2; error in line "+token.getLine()+" and col "+token.getCol());
+                    while(!isFollow("MethodDecl",input) && !input.equals("eof"))
+                    {
+                        getInput();
+                    }
+                    return true;
+                }
+            }
+        }
+        else
+        {
+            error("error on MethodDecl, return type is not mentioned. use void or Type. error on line "+token.getLine()+" and col "+token.getCol());
+            if(input.equals("identifier"))
+            {
+                getInput();
+                if(input.equals("("))
+                {
+                    getInput();
+                    if(input.equals(")"))
+                    {   //o arg!
+                        getInput();
+                        return Block();
+                    }
+                    else if(input.equals("char") || input.equals("int") || input.equals("float"))
+                    {
+                        if(ArgsForm())
+                        {
+                            if(input.equals(")"))
+                            {
+                                getInput();
+                                return Block();
+                            }else
+                            {
+                                error("missing ) 2; error in line " + token.getLine() + " and col " + token.getCol());
+                                while(!isFollow("MethodDecl",input)&&!input.equals("eof")) {
+                                    getInput();
+
+                                }
+                                return true;
+                            }
+                        }
+                        else{
+                            error("ArgsForm expected here in line "+token.getLine()+" and col "+ token.getCol());
+                            while(!isFollow("MethodDecl",input)&&!input.equals("eof")) {
+                                getInput();
+
+                            }
+                            return true;
+                        }
+                    }
+                    else{
+                        error("ArgsForm expected here in line "+token.getLine()+" and col "+ token.getCol());
+                        while(!isFollow("MethodDecl",input)&&!input.equals("eof")) {
+                            getInput();
+
+                        }
+                        return true;
+                    }
+                }
+                else{
+                    error("missing identifier3; error in line " + token.getLine() + " and col " + token.getCol());
+                    while(!isFollow("MethodDecl",input)&&!input.equals("eof")) {
+                        getInput();
+
+                    }
+                    return true;
+                }
+            }
+            error("missing identifier4; error in line "+token.getLine()+" and col "+token.getCol());
+            while(!isFollow("MethodDecl",input)&&!input.equals("eof")) {
+                getInput();
+
+            }
+            return true;
+        }
+        System.out.println("error on MethodDecl2");
+        return true;
+    } //done
+    private static boolean Type()
+    {
+        if(input.equals("char") || input.equals("float") || input.equals("int"))
+        {
+            getInput();
+            if(input.equals("["))
+            {
+                getInput();
+                if(input.equals("]"))
+                {
+                    getInput();
+                    return true;
+                }
+                else
+                {
+                    error("missing ] in line: " + token.getLine() + "in Col : " + token.getCol());
+                    while(!isFollow("Type",input))
+                    {
+                        getInput();
+                    }
+                    return true;
+                }
+            }
+            else
+            {
+                return true;
+            }
+        }
+        return false;
+    } //checked //not checked ep
+    private static boolean Addop()
+    {
+        if(input.equals("+"))
+        {
+            getInput();
+            return true;
+        }
+        else if(input.equals("-"))
+        {
+            getInput();
+            return true;
+        }
+        else
+        {
+            error("not true operation!");
+            while(!isFollow("Addop",input) && !input.equals("eof")){
+                getInput();
+            }
+            return true;
+        }
+    }
+    public static boolean Mulop()
+    {
+        if(input.equals("*")||input.equals("/")||input.equals("%")){
+            getInput();
+            return true;
+        }
+        error("not true operator...");
+        while(!isFollow("Mulop",input) && !input.equals("eof")){
+            getInput();
+        }
+        return true;
+
+    }
+    public static boolean Relop()
+    {//checked
+        if(input.equals("=")||input.equals("==")||input.equals("!=")||input.equals("<")||input.equals("<=")||input.equals(">")||input.equals(">=")){
+
+            getInput();
+            return true;
+        }
+        System.out.print("not true operator");
+        return false;
+    }      ///done
+    public static boolean CondTerm()
+    {//checked
+        if(CondFact()){
+            while(input.equals("&&")) {
+                getInput();
+                if(CondFact())
+                    continue;
+                else{
+                    error("some fact is missing in condition line" + token.getLine() + "and col" + token.getCol());
+                    while(!isFollow("CondTerm",input)&& !input.equals("eof")){
+                        getInput();
+                    }
+                    return true;
+                }
+            }
+            return true;
+        }
+        System.out.println("there must be a condition fact here in line" + token.getLine() + "and col" + token.getCol());
+        return false;
+
+    }
+    private static boolean ConstDecl()
+    {//checked
+        if(input.equals("final")){
+            getInput();
+
+            if(Type()){
+
+                if(input.equals("identifier")){
+                    getInput();
+
+                    if(input.equals("=")){
+                        getInput();
+
+                        if(input.equals("number")||input.equals("Terminal")){
+
+
+                            getInput();
+
+                            if(input.equals(";")) {
+
+                                getInput();
+                                return true;
+                            }
+                            else{
+                                error("missing ; in line " + token.getLine() + "and col " + token.getCol());
+
+                                while(!isFollow("ConstDecl",input)||token.equals("eof")){
+
+                                    getInput();
+                                }
+                                return false;
+                            }
+                        }
+                        else{
+                            error("initialize via char or integer. error on line" + token.getLine() + "and col" + token.getCol());
+
+                            while(!isFollow("ConstDecl",input)||token.equals("eof")){
+
+                                getInput();
+                            }
+                            return false;
+                        }
+
+                    }
+                    else{
+                        error("initialize needs'=' symbol. error on line" + token.getLine() + "and col" + token.getCol());
+
+                        while(!isFollow("ConstDecl",input)||token.equals("eof")){
+
+                            getInput();
+                        }
+                        return false;
+                    }
+
+                }
+                else{
+                    error("enter identifier after type. error on line" + token.getLine() + "and col" + token.getCol());
+
+                    while(!isFollow("ConstDecl",input)||token.equals("eof")){
+
+                        getInput();
+                    }
+                    return false;
+                }
+
+            }
+            else{
+                error("enter type at first. error on line" + token.getLine() + "and col" + token.getCol());
+
+                while(!isFollow("ConstDecl",input)||token.equals("eof")){
+
+                    getInput();
+                }
+
+                return false;
+            }
+
+        }
+        else{
+            error("declare final const. error on line" + token.getLine() + "and col" + token.getCol());
+            while(!isFollow("ConstDecl",input)||token.equals("eof")){
+                getInput();
+            }
+            return false;
+        }
+
+    }       //done
+    private static boolean Block()
+    {  //dunno if its right or anything...:|
+        //checked
+        boolean result=true;
+        if(input.equals("{")){
+            getInput();
+            while(input.equals("while") ||input.equals("break")||input.equals("return")
+                    || input.equals(";") ||input.equals("print") || input.equals("read")
+                    || input.equals("{") || input.equals("if") || input.equals("identifier")){
+
+                if(Statement()){
+                    result=true;
+                }
+                else{
+                    error("statement reported wrong answer here");
+
+                    result=false;
+                    break;
+                }
+
+            }
+            if(result==true&&input.equals("}")){
+                getInput();
+                return true;
+            }
+            else{
+                error("some } missing in line "+token.getLine()+"and col "+token.getCol());
+                while(!isFollow("Block",input)&&!input.equals("eof")){
+                    getInput();
+                }
+                return true;
+            }
+        }
+        error("expected { in line  "+token.getLine()+"and col "+token.getCol());
+        while(!isFollow("Block",input)&&!input.equals("eof")){
+            getInput();
+        }
+        return true;
+    }       //done
+    private static boolean Factor()
+    {
+        if(input.equals("number"))
+        {
+            getInput();
+            return true;
+        }
+        else if(input.equals("Terminal"))
+        {
+            getInput();
+            return true;
+        }
+        else if(input.equals("new"))
+        {
+            getInput();
+            if(input.equals("identifier"))
+            {
+                getInput();
+                if(input.equals("["))
+                {
+                    getInput();
+                    if(input.equals("identifier") || input.equals("-") || input.equals("number") ||input.equals("new") || input.equals("("))
+                    {
+                        if(Expression())
+                        {
+                            if(input.equals("]"))
+                            {
+                                getInput();
+                                return true;
+                            }
+                            else
+                            {
+                                System.out.println("] baste nazashtin!,in FActor");
+                                return false;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        System.out.print("missing expression!");
+                        return false;
+                    }
+
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                System.out.println("wrong in Factor missing id!!");
+                return false;
+            }
+        }
+        else if(input.equals("("))
+        {
+            getInput();
+            if(input.equals("identifier") ||  input.equals("-") || input.equals("number") ||input.equals("new") || input.equals("("))
+            {
+                if(Expression())
+                {
+                    if(input.equals(")"))
+                    {
+                        getInput();
+                        return true;
+                    }
+                    else
+                    {
+                        System.out.print("missing )!in Factor/(");
+                        return false;
+                    }
+                }
+            }
+            else
+            {
+                System.out.println("missing expression!!!in factor(");
+                return false;
+            }
+        }
+        else if(input.equals("identifier"))
+        {
+            if(Designator())
+            {
+                if(input.equals("("))
+                {
+                    getInput();
+                    if(input.equals("-") || input.equals("number") ||input.equals("new") || input.equals("("))
+                    {
+                        if(ActPars())
+                        {
+                            if(input.equals(")"))
+                            {
+                                getInput();
+                                return true;
+                            }
+                            else
+                            {
+                                System.out.println(") baste nazashtin!,in FActor,Design");
+                                return false;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        System.out.println("warnning:() with no ActPART");
+                        if(input.equals(")"))
+                        {
+                            getInput();
+                            return true;
+                        }
+                        else
+                        {
+                            System.out.println(") baste nazashtin!,in FActor,Design");
+                            return false;
+                        }
+                    }
+                }
+                else
+                {
+                    System.out.println("warnning: no (), no ActPART");
+                    return true;
+                }
+            }
+            else
+            {
+                /////////////////what to DO?inja age designator qalat bashe!tokenemun az dast mire!
+                System.out.println("wrong designator!");
+                return false;
+            }
+        }
+        System.out.println("what R U doing in factor?!");
+        return false;
+    }
+    private static boolean CondFact()
+    {
+        if(input.equals("-") ||input.equals("identifier")||input.equals("Terminal")
+                || input.equals("number") ||input.equals("new") || input.equals("("))//first(exp)
+        {
+            if(Expression())
+            {
+                if(Relop())
+                {
+                    if(input.equals("-") ||input.equals("identifier")||input.equals("Terminal")
+                            || input.equals("number") ||input.equals("new") || input.equals("("))//first(exp)
+                    {
+                        if(Expression())
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            error("wrong 2'nd exp in condition!");
+                            while(!isFollow("CondFact",input)&&!input.equals("eof")){
+                                getInput();
+                            }
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        error("missing 2'nd conditional exp!");
+                        while(!isFollow("CondFact",input)&&!input.equals("eof")){
+                            getInput();
+                        }
+                        return true;
+                    }
+                }
+                else{
+                    error("missing relop here ");
+                    while(!isFollow("CondFact",input)&&!input.equals("eof")) {
+                        getInput();
+                    }
+                    return true;
+                }
+
+            }
+            else
+            {
+                error("wrong 1'st exp in condition!");
+                while(!isFollow("CondFact",input)&&!input.equals("eof")){
+
+                }
+                return true;
+            }
+        }
+        else
+        {
+            error("missing conditional expression!");
+            while(!isFollow("CondFact",input)&&!input.equals("eof")){
+                getInput();
+            }
+            return true;
+        }
+        //return true;
+    }
+    private static boolean Condition()
+    {
+        if(input.equals("-") ||input.equals("identifier")||input.equals("Terminal")
+                || input.equals("number") ||input.equals("new") || input.equals("("))//first(CondTerm)
+        {
+            if(CondTerm())
+            {
+                if(input.equals("||"))//||
+                {
+                    getInput();
+                    if(input.equals("-") ||input.equals("identifier")||input.equals("Terminal")
+                            || input.equals("number") ||input.equals("new") || input.equals("("))//first(CondTerm)
+                    {
+                        while(CondTerm())
+                        {
+                            if(input.equals("||"))
+                            {
+                                getInput();
+                                if(input.equals("-") ||input.equals("identifier")||input.equals("Terminal")
+                                        || input.equals("number") ||input.equals("new") || input.equals("("))//first(CondTerm)
+                                {
+                                    continue;
+                                }
+                                else
+                                {
+                                    error("no CondTerm after || here!");
+                                    while(!isFollow("Condition",input)&&!input.equals("eof")) {
+                                        getInput();
+                                    }
+                                    return true;
+                                }
+                            }
+                            else if(input.equals(")"))//follow(Condition)
+                            {
+                                return true;
+                            }
+                            else
+                            {
+                                error("wrong conditon!/no condterm");
+                                while(!isFollow("Condition",input)&&!input.equals("eof")) {
+                                    getInput();
+                                }
+                                return true;
+
+                            }
+                        }
+
+                        error("wrong condterm");
+                        while(!isFollow("Condition",input)&&!input.equals("eof")) {
+                            getInput();
+                        }
+                        return true;
+
+                    }
+                    else
+                    {
+                        error("no CondTerm after ||!");
+                        while(!isFollow("Condition",input)&&!input.equals("eof")) {
+                            getInput();
+                        }
+                        return true;
+                    }
+                }
+                else if(input.equals(")"))//follow(Condition)
+                {
+                    return true;
+                }
+                else
+                {
+                    error("wrong condterm here!");
+                    while(!isFollow("Condition",input)&&!input.equals("eof")) {
+                        getInput();
+                    }
+                    return true;
+                }
+            }
+            else
+            {
+                error("wrong condterm here!");
+                while(!isFollow("Condition",input)&&!input.equals("eof")) {
+                    getInput();
+                }
+                return true;
+            }
+        }
+        else
+        {
+            error("wrong Condition/no CondTerm");
+            while(!isFollow("Condition",input)&&!input.equals("eof")) {
+                getInput();
+            }
+            return true;
+        }
+    }
+    private static boolean Expression()
+    {
+        if(input.equals("-"))
+        {
+            getInput();
+            if(input.equals("identifier")||input.equals("Terminal") || input.equals("number") ||input.equals("new") || input.equals("("))
+            {
+                if(Term())
+                {
+
+                    if(input.equals("+") || input.equals("-")) //AddOp!
+                    {
+                        while(Addop())
+                        {
+                            if(input.equals("identifier")||input.equals("Terminal") || input.equals("number") ||input.equals("new") || input.equals("("))
+                            {
+                                if(Term())
+                                {
+                                    if(input.equals("+") || input.equals("-"))
+                                    {
+                                        continue;
+                                    }
+                                    else if(input.equals(";") || input.equals(",") || input.equals("==") ||
+                                            input.equals("!=")||input.equals("<")||input.equals("<=")||input.equals(">")||input.equals(">=") || input.equals("]"))//follow(Expression)
+                                    {
+                                        return true;
+                                    }
+                                    else
+                                    {
+                                        error("wrong exp5" + token.getCol() + "in line " + token.getLine());
+                                        while(!isFollow("Expression",input)&&!input.equals("eof"))   {
+                                            getInput();
+                                        }
+                                        return true;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                System.out.println("missing term!"+"in col "+token.getCol() + "in line "+ token.getLine());
+                                return false;
+                            }
+                        }
+                        error("addop omiitted here! fix it please!") ;
+                        while(!isFollow("Expression",input)&&!input.equals("eof"))   {
+                            getInput();
+                        }
+                        return true;
+                    }
+                    else
+                    {
+                        return true;
+                    }
+                }
+                else
+                {
+                    error("wrong Term in expression!in line" + token.getLine() + "in col " + token.getCol());
+                    while(!isFollow("Expression",input)&&!input.equals("eof"))   {
+                        getInput();
+                    }
+                    return false;
+                }
+            }
+            else
+            {
+                error("no term in expression" + "in col" + token.getCol() + "in line " + token.getLine());
+                while(!isFollow("Expression",input)&&!input.equals("eof"))   {
+                    getInput();
+                }
+                return true;
+            }
+        }
+        else //[-]term na! khode term!
+        {
+
+            if(input.equals("identifier")||input.equals("Terminal") || input.equals("number") ||input.equals("new") || input.equals("("))
+            {
+                if(Term())
+                {
+                    if(input.equals("+") || input.equals("-")) //AddOp!
+                    {
+                        while(Addop())
+                        {
+                            if(input.equals("identifier")||input.equals("Terminal") || input.equals("number") ||input.equals("new") || input.equals("("))
+                            {
+                                if(Term())
+                                {
+                                    if(input.equals("+") || input.equals("-"))
+                                    {
+                                        continue;
+                                    }
+                                    else if(input.equals(";") || input.equals(",") || input.equals("==") ||
+                                            input.equals("!=")||input.equals("<")||input.equals("<=")||input.equals(">")||input.equals(">=") || input.equals("]"))//follow(Expression)
+                                    {
+                                        return true;
+                                    }
+                                    else
+                                    {
+                                        error("err on exp" + input);
+                                        error("wrong exp4" + token.getCol() + "in line " + token.getLine());
+                                        while(!isFollow("Expression",input)&&!input.equals("eof"))   {
+                                            getInput();
+                                        }
+                                        return true;
+                                    }
+                                }
+                                else{
+                                    error("term resurns wrong answer here!");
+                                    while(!isFollow("Expression",input)&&!input.equals("eof"))   {
+                                        getInput();
+                                    }
+                                    return true;
+                                }
+                            }
+                            else
+                            {
+                                error("missing term! in line "+ token.getLine()+" and col "+token.getCol());
+                                while(!isFollow("Expression",input)&&!input.equals("eof"))   {
+                                    getInput();
+                                }
+                                return true;
+                            }
+                        }
+                        error("addop was omitted, fix in soon!");
+                        while(!isFollow("Expression",input)&&!input.equals("eof"))   {
+                            getInput();
+                        }
+                        return true;
+                    }
+                    else
+                    {
+                        return true;
+                    }
+                }
+                else
+                {
+                    error("wrong Term in expression!in line" + token.getLine() + "in col " + token.getCol());
+                    while(!isFollow("Expression",input)&&!input.equals("eof"))   {
+                        getInput();
+                    }
+                    return true;
+                }
+            }
+            else
+            {
+
+                error("no term in expression" + "in col" + token.getCol() + "in line " + token.getLine());
+                while(!isFollow("Expression",input)&&!input.equals("eof"))   {
+                    getInput();
+                }
+                return true;
+            }
+        }
+
+
+    }
+    private static boolean ClassDecl()
+    {
+        getInput();
+        if(input.equals("identifier")){
+            getInput();
+            if(input.equals("{")){
+                getInput();
+                if(input.equals("int") || input.equals("float") || input.equals("char"))//first(VarDecl)
+                {
+                    while(VarDecl()){
+                        if(!(input.equals("int") || input.equals("float") || input.equals("char")))
+                            break;
+                    }
+                }
+                else//ta akhare class bekhun rad kon!!
+                {
+                    while(!input.equals("}") && !isFollow("ClassDecl",input))//ya follow(class)
+                    {
+                        getInput();
+                    }
+                }
+                if(input.equals("}")){
+                    getInput();
+                    return true;
+                }
+                else
+                {
+                    error("not matching {} in line"+token.getLine()+"an col"+token.getCol());
+                    return true;
+                }
+            }
+            else
+            {
+                error("lost { in line"+token.getLine()+"an col"+token.getCol());
+                while(!isFollow("ClassDecl",input))
+                {
+                    getInput();
+                }
+                return true;
+            }
+        }
+        else
+        {
+            error("enter identifier in line" + token.getLine() + " and col" + token.getCol());
+            while(!isFollow("ClassDecl",input))
+            {
+                getInput();
+            }
+            return true;
+        }
+    }  //error production completed
+    private static boolean ArgsForm()
+    {//checked
+        if(input.equals("char") || input.equals("int") || input.equals("float"))//first(Type)
+        {
+            boolean onLoop = false;
+            do
+            {
+                if(Type())
+                {
+                    if(input.equals("identifier"))
+                    {
+                        getInput();
+                        if(input.equals(","))
+                        {
+                            getInput();
+                            if(input.equals("char") || input.equals("int") || input.equals("float"))//first(Type)
+                            {
+                                onLoop = true;
+                            }
+                            else
+                            {
+                                onLoop = false;
+                                error("enter type and identifier after , please. error on line "+token.getLine()+" and col "+ token.getCol());
+                                while(!isFollow("ArgsForm",input)&& !input.equals("eof")) {
+                                    getInput();
+                                    System.out.println(input);
+
+                                }
+                                return false;
+                            }
+                        }
+                        else
+                        {
+                            onLoop = false;
+                        }
+                    }
+                    else{
+                        onLoop=false;
+                        error("enter identifier after type please. error on line "+token.getLine()+" and col "+ token.getCol());
+                        while(!isFollow("ArgsForm",input)&& !input.equals("eof")) {
+                            getInput();
+                            System.out.println(input);
+
+                        }
+                        return true;
+                    }
+                }
+                else{  //home sweet home
+                    onLoop=false;
+                    error("type says error. error on line "+token.getLine()+" and col "+ token.getCol());
+                    while(!isFollow("ArgsForm",input)&& !input.equals("eof")) {
+                        getInput();
+                        System.out.println(input);
+
+                    }
+                    return true;
+                }
+
+            }while(onLoop);
+            if(input.equals(")"))//follow(ArgsForm)
+            {
+                return true;
+            }
+            else
+            {
+                System.out.println("missing ) after argomans in  " + "line " + token.getLine() + "col" + token.getCol());
+                return true;
+            }
+        }
+        else
+        {
+            System.out.println("enter Type of ur identifier!"+" in col "+token.getCol() + " in line" + token.getLine());
+            return true;
+        }
+    }        //done
+    private static boolean ActPars()
+    {//checked
+        boolean result=false;
+        if(Expression()){
+            result=true;
+            if(input.equals(","))
+            {
+                result=false;
+                while(input.equals(","))
+                {
+                    getInput();
+                    if(Expression())
+                    {
+                        result=true;
+                    }
+                    else{
+                        result=true;
+                        error("expression expected in line"+token.getLine()+ "and col"+token.getCol());
+                        while(!(isFollow("ActPars",input)) && !(input.equals("eof")))
+                        {
+                            getInput();
+                        }
+                        break;
+                    }
+                }
+                return result;
+            }
+            else
+            {
+                return result;
+            }
+        }
+        else
+        {
+            error("expression expected in line"+token.getLine()+ "and col"+token.getCol());
+            while(!(isFollow("ActPars",input)) && !(input.equals("eof")))
+            {
+                getInput();
+            }
+            result=true;
+        }
+        return result;
+    }
+    private static boolean Term()
+    {//problem
+        boolean result=false;
+        //if(first(Factor56456565)
+        if(input.equals("identifier")||input.equals("number")||input.equals("Terminal")||input.equals("new")||input.equals("("))  {
+            if(Factor())
+            {
+                result=true;
+
+                if(input.equals("/")||input.equals("%")||input.equals("*"))
+                {
+                    result=false;
+                    while(Mulop())
+                    {
+                        if(input.equals("identifier")||input.equals("number")||input.equals("Terminal")||input.equals("new")||input.equals("(")) { //first(Factor)
+                            if(Factor())
+                            {
+                                result=true;
+                                continue;
+                            }
+                            else
+                            {
+                                result=true;
+                                error("Factor expected here after mulop in col: "+token.getCol() + "in line: " + token.getLine());
+                                while(!isFollow("Term",input))
+                                {
+                                    getInput();
+                                }
+                                break;
+                                //error occures:|
+                            }
+                        }
+                        else
+                        {
+                            error("enter factor after mulop please in col "+ token.getLine() + "in line " + token.getLine());
+                            result=true;
+                            while(!isFollow("Term",input))
+                            {
+                                getInput();
+                            }
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    //do nothing. no loop occures here.
+                }
+            }
+            else
+            {
+                error("wrong Factor in col: "+token.getCol() + "in line: " + token.getLine());
+                while(!isFollow("Term",input))
+                {
+                    getInput();
+                }
+                result=true;
+            }
+        }
+        else
+        {
+            result=true;
+            error("first Factor expected here in line" +token.getLine() + "in col" + token.getCol() );
+            while(!isFollow("Term",input))
+            {
+                getInput();
+            }
+        }
+        //System.out.println("after term s finished result is "+result);
+        return result;
+    }  //not checked ep
+    private static boolean Designator()
+    {//checked
+        boolean result = true;
+        if(input.equals("identifier"))
+        {
+            getInput();
+            while(input.equals(".") || input.equals("["))
+            {
+                if(input.equals("."))
+                {
+                    getInput();
+                    if(input.equals("identifier"))
+                    {
+                        getInput();
+                    }
+                    else
+                    {
+                        error("missing id after . in col :"+ token.getCol() +"in line : " + token.getLine());
+                        while(!isFollow("Designator",input) && !input.equals("eof"))
+                        {
+                            getInput();
+                        }
+                        result = true;
+                    }
+                }
+                else if(input.equals("["))
+                {
+                    getInput();
+                    if(input.equals("-") ||input.equals("identifier")||input.equals("Terminal")
+                            || input.equals("number") ||input.equals("new") || input.equals("("))//first(exp)
+                    {
+                        if(Expression())
+                        {
+                            if(input.equals("]"))
+                            {
+                                getInput();
+                            }
+                            else
+                            {
+                                error("] baste ja munde!in col: " + token.getCol() + "in col" + token.getLine());
+                                while(!isFollow("Designator",input) && !input.equals("eof"))
+                                {
+                                    getInput();
+                                }
+                                result = true;
+                            }
+                        }
+                        else
+                        {
+                            System.out.println("wrong exp on designator in line:" + token.getLine() + "in col "+ token.getCol());
+                            while(!isFollow("Designator",input) && !input.equals("eof"))
+                            {
+                                getInput();
+                            }
+                            result = true;
+                        }
+                    }
+                    else
+                    {
+                        System.out.println("first exp was expected in line: "+token.getLine()+"in col: "+token.getCol());
+                        while(!isFollow("Designator",input) && !input.equals("eof"))
+                        {
+                            getInput();
+                        }
+                        result = true;
+                    }
+                }
+                else
+                {
+
+                    System.out.println("wrong designator form no [ no . !! in line: "+token.getLine()+"in col "+token.getCol());
+                    while(!isFollow("Designator",input) && !input.equals("eof"))
+                    {
+                        getInput();
+                    }
+                    result = true;
+                }
+            }
+        }
+        return  result;
+    }  //not checked ep
+    private static boolean Statement()
+    {
+        if(input.equals("identifier"))
+        {
+            if(Designator())
+            {
+                if(input.equals("="))
+                {
+                    getInput();
+                    if(input.equals("-") ||input.equals("identifier")||input.equals("Terminal")
+                            || input.equals("number") ||input.equals("new") || input.equals("("))//first(exp)
+                    {
+                        if(Expression())
+                        {
+                            if(input.equals(";"))
+                            {
+                                getInput();
+                                return true;
+                            }
+                            else
+                            {
+                                error("missing ; in statement! in line" + token.getLine() + "in col: "+token.getCol());
+                                while(!(isFollow("Statement",input)) && !(input.equals("eof")) && !(input.equals(";")))
+                                {
+                                    getInput();
+                                }
+                                return true;
+                            }
+                        }
+                        else
+                        {
+                            error("wrong exp in statement in line "+token.getLine() +" in col "+token.getCol());
+                            while(!(isFollow("Statement",input)) && !(input.equals("eof")) && !(input.equals(";")))
+                            {
+                                getInput();
+                            }
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        error("missing exp in line "+token.getLine() +" in col "+token.getCol());
+                        while(!(isFollow("Statement",input)) && !(input.equals("eof")) && !(input.equals(";")))
+                        {
+                            getInput();
+                        }
+                        return true;
+                    }
+                }
+                else if(input.equals("("))
+                {
+                    getInput();
+                    if(input.equals("-") ||input.equals("identifier")||input.equals("Terminal")
+                            || input.equals("number") ||input.equals("new") || input.equals("("))//first(ActPars)
+                    {
+                        if(ActPars())
+                        {
+                            if(input.equals(")"))
+                            {
+                                getInput();
+                                if(input.equals(";"))
+                                {
+                                    getInput();
+                                    return true;
+                                }
+                                else
+                                {
+                                    error("missing ; in line "+token.getLine() +" in col "+token.getCol());
+                                    while(!(isFollow("Statement",input)) && !(input.equals("eof")) && !(input.equals(";")))
+                                    {
+                                        getInput();
+                                    }
+                                    return true;
+                                }
+                            }
+                            else
+                            {
+                                error("missing ) in line "+token.getLine() +" in col "+token.getCol());
+                                while(!(isFollow("Statement",input)) && !(input.equals("eof")) && !(input.equals(";")))
+                                {
+                                    getInput();
+                                }
+                                return true;
+                            }
+                        }
+                        else
+                        {
+                            error("wrong in line "+token.getLine() +" in col "+token.getCol());
+                            while(!(isFollow("Statement",input)) && !(input.equals("eof")) && !(input.equals(";")))
+                            {
+                                getInput();
+                            }
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        if(input.equals(")"))
+                        {
+                            getInput();
+                            if(input.equals(";"))
+                            {
+                                getInput();
+                                return true;
+                            }
+                            else
+                            {
+                                error("missing ; in line "+token.getLine() +" in col "+token.getCol());
+                                while(!(isFollow("Statement",input)) && !(input.equals("eof")) && !(input.equals(";")))
+                                {
+                                    getInput();
+                                }
+                                return true;
+                            }
+                        }
+                        else
+                        {
+                            error("missing ) in line "+token.getLine() +" in col "+token.getCol());
+                            while(!(isFollow("Statement",input)) && !(input.equals("eof")) && !(input.equals(";")))
+                            {
+                                getInput();
+                            }
+                            return true;
+                        }
+                    }
+                }
+                else if(input.equals("++"))
+                {
+                    getInput();
+                    if(input.equals(";"))
+                    {
+                        getInput();
+                        return true;
+                    }
+                    else
+                    {
+                        error("missing ; in line "+token.getLine() +" in col "+token.getCol());
+                        while(!(isFollow("Statement",input)) && !(input.equals("eof")) && !(input.equals(";")))
+                        {
+                            getInput();
+                        }
+                        return true;
+                    }
+
+                }
+                else if(input.equals("--"))
+                {
+                    getInput();
+                    if(input.equals(";"))
+                    {
+                        getInput();
+                        return true;
+                    }
+                    else
+                    {
+                        error("missing ; in line "+token.getLine() +" in col "+token.getCol());
+                        while(!(isFollow("Statement",input)) && !(input.equals("eof")) && !(input.equals(";")))
+                        {
+                            getInput();
+                        }
+                        return true;
+                    }
+                }
+                else
+                {
+                    error("wrong follow of designator in line" + token.getLine() +"in col "+token.getCol());
+                    while(!(isFollow("Statement",input)) && !(input.equals("eof")) && !(input.equals(";")))
+                    {
+                        getInput();
+                    }
+                    return true;
+                }
+            }
+            else
+            {
+                error("wrong designator in statement! in line "+ token.getLine() +"in col "+token.getCol());
+                while(!(isFollow("Statement",input)) && !(input.equals("eof")) && !(input.equals(";")))
+                {
+                    getInput();
+                }
+                return true;
+            }
+        }
+        else if(input.equals("if"))
+        {
+            getInput();
+            if(input.equals("("))
+            {
+                getInput();
+                if(input.equals("-") ||input.equals("identifier")||input.equals("Terminal")
+                        || input.equals("number") ||input.equals("new") || input.equals("("))//first(Condition)
+                {
+                    if (Condition())
+                    {
+                        if(input.equals(")"))
+                        {
+                            getInput();
+                            if(input.equals("while") ||input.equals("break")||input.equals("return")
+                                    || input.equals(";") ||input.equals("print") || input.equals("read")
+                                    || input.equals("{") || input.equals("if") || input.equals("identifier"))//first(statement)
+                            {
+                                if(Statement())
+                                {
+                                    if(input.equals("else"))
+                                    {
+                                        getInput();
+                                        if(input.equals("while") ||input.equals("break")||input.equals("return")
+                                                || input.equals(";") ||input.equals("print") || input.equals("read")
+                                                || input.equals("{") || input.equals("if") || input.equals("identifier"))//first(statement)
+                                        {
+                                            if(Statement())
+                                            {
+                                                return true;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            error("missing stmnt on else part! in line "+ token.getLine() +"in col "+token.getCol());
+                                            while(!(isFollow("Statement",input)) && !(input.equals("eof")))
+                                            {
+                                                getInput();
+                                            }
+                                            return true;
+                                        }
+                                    }
+                                    else
+                                    {   //check follow?!
+                                        return true;
+                                    }
+                                }
+                            }
+                            else
+                            {error("missing stmnt in if! in line "+ token.getLine() +"in col "+token.getCol());
+                                while(!(isFollow("Statement",input)) && !(input.equals("eof")))
+                                {
+                                    getInput();
+                                }
+                                return true;
+                            }
+                        }
+                        else
+                        {
+                            error("missing ) in line "+ token.getLine() +"in col "+token.getCol());
+                            while(!(isFollow("Statement",input)) && !(input.equals("eof")))
+                            {
+                                getInput();
+                            }
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        error("wrong if condition in statement! in line "+ token.getLine() +"in col "+token.getCol());
+                        while(!(isFollow("Statement",input)) && !(input.equals("eof")))
+                        {
+                            getInput();
+                        }
+                        return true;
+                    }
+                }
+                else
+                {
+                    error("missing conditionin if in statement! in line "+ token.getLine() +"in col "+token.getCol());
+                    while(!(isFollow("Statement",input)) && !(input.equals("eof")) )
+                    {
+                        getInput();
+                    }
+                    return true;
+                }
+            }
+            else
+            {
+                error("missing ( in statement! in line "+ token.getLine() +"in col "+token.getCol());
+                while(!(isFollow("Statement",input)) && !(input.equals("eof")))
+                {
+                    getInput();
+                }
+                return true;
+            }
+        }
+        else if(input.equals("while"))
+        {
+            getInput();
+            if(input.equals("("))
+            {
+                getInput();
+                if(input.equals("-") ||input.equals("identifier")||input.equals("Terminal")
+                        || input.equals("number") ||input.equals("new") || input.equals("("))//first(exp)
+                {
+                    if(Condition())
+                    {
+                        if(input.equals(")"))
+                        {
+                            getInput();
+                            if(input.equals("while") ||input.equals("break")||input.equals("return")
+                                    || input.equals(";") ||input.equals("print") || input.equals("read")
+                                    || input.equals("{") || input.equals("if") || input.equals("identifier"))//first(statement)
+                            {
+                                if(Statement())
+                                {
+                                    return true;
+                                }
+                                else
+                                {
+                                    error("wrong while in statement! in line "+ token.getLine() +"in col "+token.getCol());
+                                    while(!(isFollow("Statement",input)) && !(input.equals("eof")))
+                                    {
+                                        getInput();
+                                    }
+                                    return true;
+                                }
+                            }
+                            else
+                            {
+                                error("warning no stmt in while?!! in line "+ token.getLine() +"in col "+token.getCol());
+                                while(!(isFollow("Statement",input)) && !(input.equals("eof")))
+                                {
+                                    getInput();
+                                }
+                                return true;
+                            }
+                        }
+                        else
+                        {
+                            error("missing ) in line "+ token.getLine() +"in col "+token.getCol());
+                            while(!(isFollow("Statement",input)) && !(input.equals("eof")))
+                            {
+                                getInput();
+                            }
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        error("wrong whiles condition in statement! in line "+ token.getLine() +"in col "+token.getCol());
+                        while(!(isFollow("Statement",input)) && !(input.equals("eof")))
+                        {
+                            getInput();
+                        }
+                        return true;
+                    }
+                }
+                else
+                {
+                    error("missing while condition  in statement! in line "+ token.getLine() +"in col "+token.getCol());
+                    while(!(isFollow("Statement",input)) && !(input.equals("eof")))
+                    {
+                        getInput();
+                    }
+                    return true;
+                }
+
+            }
+            else
+            {
+                error("missing ( in while - in statement! in line "+ token.getLine() +"in col "+token.getCol());
+                while(!(isFollow("Statement",input)) && !(input.equals("eof")))
+                {
+                    getInput();
+                }
+                return true;
+            }
+        }
+        else if(input.equals("break"))
+        {
+            getInput();
+            if(input.equals(";"))
+            {
+                getInput();
+                return true;
+            }
+            else
+            {
+                error("missing ; in break in line "+ token.getLine() +"in col "+token.getCol());
+                while(!(isFollow("Statement",input)) && !(input.equals("eof")) && !(input.equals(";")))
+                {
+                    getInput();
+                }
+                return true;
+            }
+        }
+        else if(input.equals("return"))
+        {
+
+            getInput();
+
+            if(input.equals("-") ||input.equals("identifier")||input.equals("Terminal")
+                    || input.equals("number") ||input.equals("new") || input.equals("("))//first(exp)
+            {
+                if(Expression())
+                {
+                    if(input.equals(";"))
+                    {
+                        System.out.println("return accepts it");
+                        getInput();
+                        return true;
+                    }
+                    else
+                    {
+                        error("missing ; in return1 in line "+ token.getLine() +"in col "+token.getCol());
+                        while(!(isFollow("Statement",input)) && !(input.equals("eof")) && !(input.equals(";")))
+                        {
+                            getInput();
+                        }
+                        return true;
+                    }
+                }
+                else
+                {
+                    error("wrong return expression in line "+ token.getLine() +"in col "+token.getCol());
+                    while(!(isFollow("Statement",input)) && !(input.equals("eof")) && !(input.equals(";")))
+                    {
+                        getInput();
+                    }
+                    return true;
+                }
+            }
+            else
+            {
+                if(input.equals(";"))
+                {
+                    getInput();
+                    return true;
+                }
+                else
+                {
+                    error("missing ; in return2 in line "+ token.getLine() +"in col "+token.getCol());
+                    while(!(isFollow("Statement",input)) && !(input.equals("eof")) && !(input.equals(";")))
+                    {
+                        getInput();
+                    }
+                    return true;
+                }
+            }
+        }
+        else if(input.equals("print"))
+        {
+            getInput();
+            if(input.equals("("))
+            {
+                getInput();
+                if(input.equals("-") ||input.equals("identifier")||input.equals("Terminal")
+                        || input.equals("number") ||input.equals("new") || input.equals("("))//first(exp)
+                {
+                    if(Expression())
+                    {
+                        if(input.equals(","))
+                        {
+                            getInput();
+                            if(input.equals("number"))
+                            {
+                                getInput();
+                                if(input.equals(")"))
+                                {
+                                    getInput();
+                                    if(input.equals(";"))
+                                    {
+                                        getInput();
+                                        return true;
+                                    }
+                                    else
+                                    {
+                                        error("missing in line "+ token.getLine() +"in col "+token.getCol());
+                                        while(!(isFollow("Statement",input)) && !(input.equals("eof")) && !(input.equals(";")))
+                                        {
+                                            getInput();
+                                        }
+                                        return true;
+                                    }
+                                }
+                                else
+                                {
+                                    error("missing ) in print "+ token.getLine() +"in col "+token.getCol());
+                                    while(!(isFollow("Statement",input)) && !(input.equals("eof")) && !(input.equals(";")))
+                                    {
+                                        getInput();
+                                    }
+                                    return true;
+                                }
+                            }
+                            else
+                            {
+                                error("missing number in print in line "+ token.getLine() +"in col "+token.getCol());
+                                while(!(isFollow("Statement",input)) && !(input.equals("eof")) && !(input.equals(";")))
+                                {
+                                    getInput();
+                                }
+                                return true;
+                            }
+                        }
+                        else
+                        {
+                            if(input.equals(")"))
+                            {
+                                getInput();
+                                if(input.equals(";"))
+                                {
+                                    getInput();
+                                    return true;
+                                }
+                                else
+                                {
+                                    error("missing ; in print in line "+ token.getLine() +"in col "+token.getCol());
+                                    while(!(isFollow("Statement",input)) && !(input.equals("eof")) && !(input.equals(";")))
+                                    {
+                                        getInput();
+                                    }
+                                    return true;
+                                }
+                            }
+                            else
+                            {
+                                error("missing ) in line "+ token.getLine() +"in col "+token.getCol());
+                                while(!(isFollow("Statement",input)) && !(input.equals("eof")) && !(input.equals(";")))
+                                {
+                                    getInput();
+                                }
+                                return true;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        error("wrong exp in print in line "+ token.getLine() +"in col "+token.getCol());
+                        while(!(isFollow("Statement",input)) && !(input.equals("eof")) && !(input.equals(";")))
+                        {
+                            getInput();
+                        }
+                        return true;
+                    }
+                }
+                else
+                {
+                    error("missing exp in print in line "+ token.getLine() +"in col "+token.getCol());
+                    while(!(isFollow("Statement",input)) && !(input.equals("eof")) && !(input.equals(";")))
+                    {
+                        getInput();
+                    }
+                    return true;
+                }
+            }
+            else
+            {
+                error("missing ( in print in line "+ token.getLine() +"in col "+token.getCol());
+                while(!(isFollow("Statement",input)) && !(input.equals("eof")) && !(input.equals(";")))
+                {
+                    getInput();
+                }
+                return true;
+            }
+        }
+        else if(input.equals("read"))
+        {
+            getInput();
+            if(input.equals("("))
+            {
+                getInput();
+                if(input.equals("identifier"))
+                {
+                    if(Designator())
+                    {
+                        if(input.equals(")"))
+                        {
+                            getInput();
+                            if(input.equals(";"))
+                            {
+                                getInput();
+                                return true;
+                            }
+                            else
+                            {
+                                error("missing ; in line "+ token.getLine() +"in col "+token.getCol());
+                                while(!(isFollow("Statement",input)) && !(input.equals("eof")) && !(input.equals(";")))
+                                {
+                                    getInput();
+                                }
+                                return true;
+                            }
+                        }
+                        else
+                        {
+                            error("missing ) in read in line "+ token.getLine() +"in col "+token.getCol());
+                            while(!(isFollow("Statement",input)) && !(input.equals("eof")) && !(input.equals(";")))
+                            {
+                                getInput();
+                            }
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        error("wrong designator in readt in line "+ token.getLine() +"in col "+token.getCol());
+                        while(!(isFollow("Statement",input)) && !(input.equals("eof")) && !(input.equals(";")))
+                        {
+                            getInput();
+                        }
+                        return true;
+                    }
+                }
+                else
+                {
+                    error("no designator in read in line "+ token.getLine() +"in col "+token.getCol());
+                    while(!(isFollow("Statement",input)) && !(input.equals("eof")) && !(input.equals(";")))
+                    {
+                        getInput();
+                    }
+                    return true;
+                }
+            }
+            else
+            {
+                error("missing ( in read in line "+ token.getLine() +"in col "+token.getCol());
+                while(!(isFollow("Statement",input)) && !(input.equals("eof")) && !(input.equals(";")))
+                {
+                    getInput();
+                }
+                return true;
+            }
+        }
+        else if(input.equals(";"))
+        {
+            getInput();
+            return true;
+        }
+        else if(input.equals("{"))//first(Block)
+        {
+            if(Block())
+                return true;
+        }
+        else
+        {
+            error("wrong stmnt sig;) in line "+ token.getLine() +"in col "+token.getCol());
+            while(!(isFollow("Statement",input)) && !(input.equals("eof")) && !(input.equals(";")))
+            {
+                getInput();
+            }
+            return true;
+        }
+        return true;
+    }
+}//end class
